@@ -10,8 +10,8 @@ const Navigation = () => {
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: Users, label: "Clients", path: "/clients" },
     { icon: FolderKanban, label: "Projects", path: "/projects" },
-    { icon: Palette, label: "Design", path: "#" },
-    { icon: FileText, label: "Documents", path: "#" },
+    { icon: Palette, label: "Design", path: "/designs" },
+    { icon: FileText, label: "Documents", path: "/documents" },
     { icon: Code2, label: "Dev Hub", path: "#" },
     { icon: BarChart3, label: "Analytics", path: "#" },
     { icon: Settings, label: "Settings", path: "#" },
@@ -26,7 +26,11 @@ const Navigation = () => {
       </div>
       
       {navItems.map((item, index) => {
-        const isActive = location.pathname === item.path || (location.pathname.startsWith('/kanban') && item.path === '/projects');
+        const isActive = 
+          location.pathname === item.path || 
+          (location.pathname.startsWith('/kanban') && item.path === '/projects') ||
+          (location.pathname === '/documents' && item.path === '/documents') ||
+          (location.pathname === '/designs' && item.path === '/designs');
         return (
           <Button
             key={index}

@@ -10,6 +10,8 @@ import Auth from "./pages/Auth";
 import Clients from "./pages/Clients";
 import Projects from "./pages/Projects";
 import Kanban from "./pages/Kanban";
+import Documents from "./pages/Documents";
+import Designs from "./pages/Designs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +54,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Kanban />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/documents"
+              element={
+                <ProtectedRoute>
+                  <Documents />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/designs"
+              element={
+                <ProtectedRoute>
+                  <Designs />
                 </ProtectedRoute>
               }
             />
