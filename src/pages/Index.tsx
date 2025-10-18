@@ -6,19 +6,27 @@ import { Users, FolderKanban, Palette, TrendingUp } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-dark">
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(0,191,255,0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,191,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,191,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      
       <Navigation />
       <Header />
       
-      <main className="ml-20 pt-16 p-8 animate-fade-in">
+      <main className="ml-20 pt-16 p-8 animate-fade-in relative z-10">
         <div className="max-w-7xl mx-auto">
           {/* Hero Section */}
           <div className="mb-12 animate-slide-up">
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-gold bg-clip-text text-transparent">
-              Welcome to Panda Tech Control System
+            <div className="flex items-center gap-4 mb-4">
+              <div className="h-1 w-12 bg-gradient-to-r from-cyber-blue to-cyber-green" />
+              <span className="text-cyber-green font-share-tech text-sm tracking-wider">▸ SYSTEM STATUS: OPERATIONAL</span>
+            </div>
+            <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-cyber-blue-glow via-white to-cyber-green-glow bg-clip-text text-transparent font-orbitron">
+              PANDATECH OPERATIONS
             </h1>
-            <p className="text-muted-foreground text-lg">
-              Powering the Future of Creative Innovation
+            <p className="text-cyber-blue font-share-tech text-lg">
+              CIA-GRADE CONTROL TERMINAL // SECURE ACCESS GRANTED
             </p>
           </div>
 
@@ -61,56 +69,65 @@ const Index = () => {
             </div>
             
             <div className="space-y-6">
-              <div className="p-6 rounded-xl bg-gradient-card border border-gold/30 shadow-gold">
-                <h3 className="text-lg font-bold mb-4 text-gold">Quick Actions</h3>
+              <div className="p-6 rounded-xl bg-gradient-cyber border-2 border-cyber-blue/30 shadow-cyber-glow relative overflow-hidden">
+                {/* Corner accents */}
+                <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyber-green" />
+                <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyber-green" />
+                <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyber-green" />
+                <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyber-green" />
+                
+                <h3 className="text-lg font-bold mb-4 text-cyber-blue font-orbitron tracking-wider">QUICK ACTIONS</h3>
                 <div className="space-y-3">
-                  <button className="w-full p-3 rounded-lg bg-gold text-black font-medium hover:bg-gold-dark transition-colors">
-                    + New Project
+                  <button className="w-full p-3 rounded-lg bg-cyber-blue/20 text-cyber-blue-glow font-medium hover:bg-cyber-blue/30 transition-all border border-cyber-blue/50 font-share-tech hover:shadow-[0_0_20px_rgba(0,191,255,0.4)]">
+                    + NEW PROJECT
                   </button>
-                  <button className="w-full p-3 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                    + Add Client
+                  <button className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]">
+                    + ADD CLIENT
                   </button>
-                  <button className="w-full p-3 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                    + Upload Design
+                  <button className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]">
+                    + UPLOAD DESIGN
                   </button>
-                  <button className="w-full p-3 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors">
-                    + Create Document
+                  <button className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]">
+                    + CREATE DOCUMENT
                   </button>
                 </div>
               </div>
 
-              <div className="p-6 rounded-xl bg-gradient-card border border-border">
-                <h3 className="text-lg font-bold mb-4">Team Activity</h3>
+              <div className="p-6 rounded-xl bg-gradient-cyber border-2 border-cyber-green/30 relative overflow-hidden">
+                {/* Scan line effect */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-green/5 to-transparent animate-pulse" />
+                
+                <h3 className="text-lg font-bold mb-4 font-orbitron text-cyber-green">TEAM ACTIVITY</h3>
                 <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-xs font-bold text-black">
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyber-blue/30 to-cyber-green/30 flex items-center justify-center text-xs font-bold border border-cyber-blue text-cyber-blue">
                       JD
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium">John Doe</p>
+                      <p className="font-medium font-share-tech text-white">John Doe</p>
                       <p className="text-muted-foreground text-xs">Updated design files</p>
                     </div>
-                    <span className="text-xs text-muted-foreground">2m ago</span>
+                    <span className="text-xs text-cyber-green font-share-tech">2m ago</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-xs font-bold">
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="w-8 h-8 rounded-full bg-cyber-gray flex items-center justify-center text-xs font-bold border border-cyber-green text-cyber-green">
                       SM
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium">Sarah Miller</p>
+                      <p className="font-medium font-share-tech text-white">Sarah Miller</p>
                       <p className="text-muted-foreground text-xs">Committed to GitHub</p>
                     </div>
-                    <span className="text-xs text-muted-foreground">15m ago</span>
+                    <span className="text-xs text-cyber-green font-share-tech">15m ago</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-xs font-bold">
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="w-8 h-8 rounded-full bg-cyber-gray flex items-center justify-center text-xs font-bold border border-cyber-blue text-cyber-blue">
                       RK
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium">Robert Kim</p>
+                      <p className="font-medium font-share-tech text-white">Robert Kim</p>
                       <p className="text-muted-foreground text-xs">Created new proposal</p>
                     </div>
-                    <span className="text-xs text-muted-foreground">1h ago</span>
+                    <span className="text-xs text-cyber-green font-share-tech">1h ago</span>
                   </div>
                 </div>
               </div>

@@ -18,9 +18,11 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed left-0 top-0 h-screen w-20 bg-sidebar border-r border-sidebar-border flex flex-col items-center py-6 gap-4">
-      <div className="mb-8">
-        <div className="w-12 h-12 bg-gradient-gold rounded-xl flex items-center justify-center font-bold text-2xl">
+    <nav className="fixed left-0 top-0 h-screen w-20 bg-black border-r-2 border-cyber-blue/30 flex flex-col items-center py-6 gap-4 shadow-[0_0_30px_rgba(0,191,255,0.2)]">
+      <div className="mb-8 relative group">
+        {/* Holographic glow for logo */}
+        <div className="absolute inset-0 rounded-xl bg-cyber-blue opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
+        <div className="relative w-12 h-12 bg-gradient-to-br from-cyber-blue/20 to-cyber-green/20 rounded-xl flex items-center justify-center font-bold text-2xl border-2 border-cyber-blue shadow-[0_0_20px_rgba(0,191,255,0.4)]">
           🐼
         </div>
       </div>
@@ -37,10 +39,10 @@ const Navigation = () => {
             key={index}
             variant={isActive ? "default" : "ghost"}
             size="icon"
-            className={`w-12 h-12 transition-all duration-300 ${
+            className={`w-12 h-12 transition-all duration-300 font-orbitron ${
               isActive 
-                ? "bg-gold text-black shadow-gold hover:bg-gold-dark" 
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                ? "bg-cyber-blue/30 text-cyber-blue-glow border-2 border-cyber-blue shadow-[0_0_20px_rgba(0,191,255,0.5)] hover:bg-cyber-blue/40" 
+                : "text-muted-foreground hover:text-cyber-blue hover:bg-cyber-gray hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]"
             }`}
             title={item.label}
             onClick={() => item.path !== "#" && navigate(item.path)}

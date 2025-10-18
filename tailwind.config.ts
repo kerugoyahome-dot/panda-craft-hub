@@ -62,15 +62,32 @@ export default {
           dark: "hsl(var(--gold-dark))",
           light: "hsl(var(--gold-light))",
         },
+        cyber: {
+          blue: "hsl(var(--cyber-blue))",
+          "blue-dark": "hsl(var(--cyber-blue-dark))",
+          "blue-glow": "hsl(var(--cyber-blue-glow))",
+          green: "hsl(var(--cyber-green))",
+          "green-glow": "hsl(var(--cyber-green-glow))",
+          gray: "hsl(var(--cyber-gray))",
+          "gray-light": "hsl(var(--cyber-gray-light))",
+        },
+      },
+      fontFamily: {
+        orbitron: ['Orbitron', 'sans-serif'],
+        'share-tech': ['Share Tech Mono', 'monospace'],
       },
       backgroundImage: {
         'gradient-gold': 'var(--gradient-gold)',
         'gradient-dark': 'var(--gradient-dark)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-cyber': 'var(--gradient-cyber)',
+        'gradient-cyber-border': 'var(--gradient-cyber-border)',
       },
       boxShadow: {
         'gold': 'var(--shadow-gold)',
         'card': 'var(--shadow-card)',
+        'cyber-glow': 'var(--shadow-cyber-glow)',
+        'cyber-input': 'var(--shadow-cyber-input)',
       },
       borderRadius: {
         lg: "var(--radius)",
