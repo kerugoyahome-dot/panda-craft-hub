@@ -156,6 +156,107 @@ export type Database = {
           },
         ]
       }
+      github_commits: {
+        Row: {
+          author_email: string | null
+          author_name: string
+          committed_at: string
+          created_at: string
+          html_url: string
+          id: string
+          message: string
+          repository_id: string
+          sha: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_email?: string | null
+          author_name: string
+          committed_at: string
+          created_at?: string
+          html_url: string
+          id?: string
+          message: string
+          repository_id: string
+          sha: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_email?: string | null
+          author_name?: string
+          committed_at?: string
+          created_at?: string
+          html_url?: string
+          id?: string
+          message?: string
+          repository_id?: string
+          sha?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "github_commits_repository_id_fkey"
+            columns: ["repository_id"]
+            isOneToOne: false
+            referencedRelation: "github_repositories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      github_repositories: {
+        Row: {
+          created_at: string
+          default_branch: string | null
+          description: string | null
+          forks_count: number | null
+          full_name: string
+          html_url: string
+          id: string
+          is_private: boolean | null
+          language: string | null
+          last_synced_at: string | null
+          name: string
+          stars_count: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          default_branch?: string | null
+          description?: string | null
+          forks_count?: number | null
+          full_name: string
+          html_url: string
+          id?: string
+          is_private?: boolean | null
+          language?: string | null
+          last_synced_at?: string | null
+          name: string
+          stars_count?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          default_branch?: string | null
+          description?: string | null
+          forks_count?: number | null
+          full_name?: string
+          html_url?: string
+          id?: string
+          is_private?: boolean | null
+          language?: string | null
+          last_synced_at?: string | null
+          name?: string
+          stars_count?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
