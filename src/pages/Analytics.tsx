@@ -28,6 +28,10 @@ interface AnalyticsData {
   tasksByPriority: { name: string; value: number }[];
   monthlyActivity: { month: string; projects: number; clients: number; tasks: number }[];
   teamPerformance: { name: string; completed: number; pending: number }[];
+  totalProjects: number;
+  totalTasks: number;
+  completedTasks: number;
+  totalClients: number;
 }
 
 const COLORS = {
@@ -45,6 +49,10 @@ const Analytics = () => {
     tasksByPriority: [],
     monthlyActivity: [],
     teamPerformance: [],
+    totalProjects: 0,
+    totalTasks: 0,
+    completedTasks: 0,
+    totalClients: 0,
   });
 
   useEffect(() => {
@@ -56,7 +64,7 @@ const Analytics = () => {
       setLoading(true);
 
       // Fetch projects by status
-      const { data: projects } = await supabase.from("projects").select("status");
+      const { data: projects } = await supabase.from("projects").select("status, created_at");
       const projectsByStatus = projects?.reduce((acc: any, project) => {
         const status = project.status || "unknown";
         const existing = acc.find((item: any) => item.name === status);
@@ -68,8 +76,8 @@ const Analytics = () => {
         return acc;
       }, []) || [];
 
-      // Fetch tasks by priority
-      const { data: tasks } = await supabase.from("tasks").select("priority");
+      // Fetch tasks by priority and status
+      const { data: tasks } = await supabase.from("tasks").select("priority, status, created_at");
       const tasksByPriority = tasks?.reduce((acc: any, task) => {
         const priority = task.priority || "unknown";
         const existing = acc.find((item: any) => item.name === priority);
@@ -81,29 +89,80 @@ const Analytics = () => {
         return acc;
       }, []) || [];
 
-      // Mock monthly activity data (you can enhance this with real date-based queries)
-      const monthlyActivity = [
-        { month: "Jan", projects: 5, clients: 8, tasks: 45 },
-        { month: "Feb", projects: 7, clients: 10, tasks: 52 },
-        { month: "Mar", projects: 6, clients: 12, tasks: 48 },
-        { month: "Apr", projects: 9, clients: 15, tasks: 65 },
-        { month: "May", projects: 11, clients: 18, tasks: 70 },
-        { month: "Jun", projects: 10, clients: 20, tasks: 68 },
-      ];
+      // Fetch clients
+      const { data: clients } = await supabase.from("clients").select("created_at");
 
-      // Mock team performance data
-      const teamPerformance = [
-        { name: "John Doe", completed: 42, pending: 8 },
-        { name: "Sarah Miller", completed: 38, pending: 12 },
-        { name: "Robert Kim", completed: 35, pending: 15 },
-        { name: "Emily Chen", completed: 40, pending: 10 },
-      ];
+      // Calculate monthly activity for last 6 months
+      const monthlyActivity = [];
+      const now = new Date();
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+        const monthProjects = projects?.filter((p: any) => {
+          const created = new Date(p.created_at);
+          return created >= monthStart && created <= monthEnd;
+        }).length || 0;
+
+        const monthClients = clients?.filter((c: any) => {
+          const created = new Date(c.created_at);
+          return created >= monthStart && created <= monthEnd;
+        }).length || 0;
+
+        const monthTasks = tasks?.filter((t: any) => {
+          const created = new Date(t.created_at);
+          return created >= monthStart && created <= monthEnd;
+        }).length || 0;
+
+        monthlyActivity.push({
+          month: date.toLocaleDateString('en-US', { month: 'short' }),
+          projects: monthProjects,
+          clients: monthClients,
+          tasks: monthTasks,
+        });
+      }
+
+      // Fetch team performance data
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name");
+
+      const teamPerformance = await Promise.all(
+        (profiles || []).map(async (profile: any) => {
+          const { data: userTasks } = await supabase
+            .from("tasks")
+            .select("status")
+            .eq("assigned_to", profile.id);
+
+          const completed = userTasks?.filter((t: any) => t.status === "done").length || 0;
+          const pending = userTasks?.filter((t: any) => t.status !== "done").length || 0;
+
+          return {
+            name: profile.full_name || "Unknown User",
+            completed,
+            pending,
+          };
+        })
+      );
+
+      // Filter out users with no tasks
+      const activeTeam = teamPerformance.filter(
+        (member) => member.completed > 0 || member.pending > 0
+      );
+
+      // Calculate totals
+      const completedTasks = tasks?.filter((t: any) => t.status === "done").length || 0;
 
       setData({
         projectsByStatus,
         tasksByPriority,
         monthlyActivity,
-        teamPerformance,
+        teamPerformance: activeTeam,
+        totalProjects: projects?.length || 0,
+        totalTasks: tasks?.length || 0,
+        completedTasks,
+        totalClients: clients?.length || 0,
       });
     } catch (error) {
       console.error("Error fetching analytics:", error);
@@ -194,7 +253,7 @@ const Analytics = () => {
                 <div>
                   <p className="text-sm text-muted-foreground font-share-tech">TOTAL PROJECTS</p>
                   <h3 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">
-                    {data.projectsByStatus.reduce((sum, item) => sum + item.value, 0)}
+                    {data.totalProjects}
                   </h3>
                 </div>
                 <FolderKanban className="w-8 h-8 text-cyber-blue" />
@@ -206,7 +265,7 @@ const Analytics = () => {
                 <div>
                   <p className="text-sm text-muted-foreground font-share-tech">TOTAL TASKS</p>
                   <h3 className="text-3xl font-bold text-cyber-green font-orbitron">
-                    {data.tasksByPriority.reduce((sum, item) => sum + item.value, 0)}
+                    {data.totalTasks}
                   </h3>
                 </div>
                 <FileText className="w-8 h-8 text-cyber-green" />
@@ -216,8 +275,12 @@ const Analytics = () => {
             <Card className="p-6 bg-gradient-cyber border-2 border-cyber-blue/30">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground font-share-tech">EFFICIENCY</p>
-                  <h3 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">92%</h3>
+                  <p className="text-sm text-muted-foreground font-share-tech">COMPLETION RATE</p>
+                  <h3 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">
+                    {data.totalTasks > 0 
+                      ? Math.round((data.completedTasks / data.totalTasks) * 100)
+                      : 0}%
+                  </h3>
                 </div>
                 <TrendingUp className="w-8 h-8 text-cyber-blue" />
               </div>
@@ -226,9 +289,9 @@ const Analytics = () => {
             <Card className="p-6 bg-gradient-cyber border-2 border-cyber-green/30">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground font-share-tech">TEAM SIZE</p>
+                  <p className="text-sm text-muted-foreground font-share-tech">TOTAL CLIENTS</p>
                   <h3 className="text-3xl font-bold text-cyber-green font-orbitron">
-                    {data.teamPerformance.length}
+                    {data.totalClients}
                   </h3>
                 </div>
                 <Users className="w-8 h-8 text-cyber-green" />
@@ -350,23 +413,29 @@ const Analytics = () => {
                 <h3 className="text-lg font-bold mb-4 text-cyber-blue font-orbitron">
                   TEAM PERFORMANCE
                 </h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={data.teamPerformance}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,191,255,0.1)" />
-                    <XAxis dataKey="name" stroke="rgba(0,191,255,0.5)" />
-                    <YAxis stroke="rgba(0,191,255,0.5)" />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "rgba(17, 24, 39, 0.95)",
-                        border: "1px solid rgba(0,191,255,0.3)",
-                        borderRadius: "8px",
-                      }}
-                    />
-                    <Legend />
-                    <Bar dataKey="completed" fill={COLORS.secondary} />
-                    <Bar dataKey="pending" fill={COLORS.primary} />
-                  </BarChart>
-                </ResponsiveContainer>
+                {data.teamPerformance.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={data.teamPerformance}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,191,255,0.1)" />
+                      <XAxis dataKey="name" stroke="rgba(0,191,255,0.5)" />
+                      <YAxis stroke="rgba(0,191,255,0.5)" />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(17, 24, 39, 0.95)",
+                          border: "1px solid rgba(0,191,255,0.3)",
+                          borderRadius: "8px",
+                        }}
+                      />
+                      <Legend />
+                      <Bar dataKey="completed" fill={COLORS.secondary} name="Completed" />
+                      <Bar dataKey="pending" fill={COLORS.primary} name="Pending" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[300px] text-muted-foreground font-share-tech">
+                    No team performance data available. Assign tasks to team members to see performance metrics.
+                  </div>
+                )}
               </Card>
             </TabsContent>
           </Tabs>
