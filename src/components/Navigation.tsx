@@ -13,7 +13,7 @@ const Navigation = () => {
     { icon: Palette, label: "Design", path: "/designs" },
     { icon: FileText, label: "Documents", path: "/documents" },
     { icon: Code2, label: "Dev Hub", path: "/dev-hub" },
-    { icon: BarChart3, label: "Analytics", path: "#" },
+    { icon: BarChart3, label: "Analytics", path: "/analytics" },
     { icon: Settings, label: "Settings", path: "#" },
   ];
 
@@ -33,7 +33,8 @@ const Navigation = () => {
           (location.pathname.startsWith('/kanban') && item.path === '/projects') ||
           (location.pathname === '/documents' && item.path === '/documents') ||
           (location.pathname === '/designs' && item.path === '/designs') ||
-          (location.pathname === '/dev-hub' && item.path === '/dev-hub');
+          (location.pathname === '/dev-hub' && item.path === '/dev-hub') ||
+          (location.pathname === '/analytics' && item.path === '/analytics');
         return (
           <Button
             key={index}

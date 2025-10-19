@@ -13,6 +13,7 @@ import Kanban from "./pages/Kanban";
 import Documents from "./pages/Documents";
 import Designs from "./pages/Designs";
 import DevHub from "./pages/DevHub";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -79,6 +80,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <DevHub />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <Analytics />
                 </ProtectedRoute>
               }
             />
