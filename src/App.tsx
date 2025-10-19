@@ -14,6 +14,7 @@ import Documents from "./pages/Documents";
 import Designs from "./pages/Designs";
 import DevHub from "./pages/DevHub";
 import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -88,6 +89,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Analytics />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               }
             />

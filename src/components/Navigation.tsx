@@ -14,7 +14,7 @@ const Navigation = () => {
     { icon: FileText, label: "Documents", path: "/documents" },
     { icon: Code2, label: "Dev Hub", path: "/dev-hub" },
     { icon: BarChart3, label: "Analytics", path: "/analytics" },
-    { icon: Settings, label: "Settings", path: "#" },
+    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   return (
@@ -34,7 +34,8 @@ const Navigation = () => {
           (location.pathname === '/documents' && item.path === '/documents') ||
           (location.pathname === '/designs' && item.path === '/designs') ||
           (location.pathname === '/dev-hub' && item.path === '/dev-hub') ||
-          (location.pathname === '/analytics' && item.path === '/analytics');
+          (location.pathname === '/analytics' && item.path === '/analytics') ||
+          (location.pathname === '/settings' && item.path === '/settings');
         return (
           <Button
             key={index}
