@@ -10,8 +10,19 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Bell, Shield, Database, Mail } from "lucide-react";
+import { User, Bell, Shield, Database, Mail, Download, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const Settings = () => {
   const { toast } = useToast();
@@ -28,10 +39,13 @@ const Settings = () => {
     updates: true,
     security: true,
   });
+  const [storageUsage, setStorageUsage] = useState({ used: 0, total: 10737418240 }); // 10GB in bytes
 
   useEffect(() => {
     if (user) {
       fetchProfile();
+      fetchNotificationPreferences();
+      fetchStorageUsage();
     }
   }, [user]);
 
@@ -81,6 +95,97 @@ const Settings = () => {
     }
   };
 
+  const fetchNotificationPreferences = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("user_preferences" as any)
+        .select("*")
+        .eq("user_id", user?.id)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setNotifications({
+          email: (data as any).email_notifications ?? true,
+          push: (data as any).push_notifications ?? false,
+          updates: (data as any).project_updates ?? true,
+          security: (data as any).security_alerts ?? true,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching preferences:", error);
+    }
+  };
+
+  const fetchStorageUsage = async () => {
+    try {
+      const { data: documents } = await supabase
+        .from("documents")
+        .select("file_size")
+        .eq("created_by", user?.id);
+
+      const { data: designs } = await supabase
+        .from("designs")
+        .select("file_size")
+        .eq("created_by", user?.id);
+
+      const totalUsed = [
+        ...(documents || []),
+        ...(designs || []),
+      ].reduce((sum, item) => sum + (item.file_size || 0), 0);
+
+      setStorageUsage({ ...storageUsage, used: totalUsed });
+    } catch (error) {
+      console.error("Error fetching storage:", error);
+    }
+  };
+
+  const saveNotificationPreferences = async () => {
+    try {
+      setLoading(true);
+      const { data: existing } = await supabase
+        .from("user_preferences" as any)
+        .select("id")
+        .eq("user_id", user?.id)
+        .maybeSingle();
+
+      const preferenceData = {
+        user_id: user?.id,
+        email_notifications: notifications.email,
+        push_notifications: notifications.push,
+        project_updates: notifications.updates,
+        security_alerts: notifications.security,
+      };
+
+      if (existing) {
+        const { error } = await supabase
+          .from("user_preferences" as any)
+          .update(preferenceData)
+          .eq("user_id", user?.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("user_preferences" as any)
+          .insert([preferenceData]);
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Success",
+        description: "Notification preferences saved",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handlePasswordReset = async () => {
     try {
       if (!user?.email) return;
@@ -101,6 +206,92 @@ const Settings = () => {
         description: error.message,
         variant: "destructive",
       });
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch all user data
+      const [profileData, projectsData, clientsData, documentsData, designsData, tasksData] = await Promise.all([
+        supabase.from("profiles").select("*").eq("id", user?.id).maybeSingle(),
+        supabase.from("projects").select("*").eq("created_by", user?.id),
+        supabase.from("clients").select("*").eq("created_by", user?.id),
+        supabase.from("documents").select("*").eq("created_by", user?.id),
+        supabase.from("designs").select("*").eq("created_by", user?.id),
+        supabase.from("tasks").select("*").eq("created_by", user?.id),
+      ]);
+
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        user: {
+          id: user?.id,
+          email: user?.email,
+        },
+        profile: profileData.data,
+        projects: projectsData.data || [],
+        clients: clientsData.data || [],
+        documents: documentsData.data || [],
+        designs: designsData.data || [],
+        tasks: tasksData.data || [],
+      };
+
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `data-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Your data has been exported successfully",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+
+      // Delete all user data
+      await Promise.all([
+        supabase.from("tasks").delete().eq("created_by", user?.id),
+        supabase.from("documents").delete().eq("created_by", user?.id),
+        supabase.from("designs").delete().eq("created_by", user?.id),
+        supabase.from("projects").delete().eq("created_by", user?.id),
+        supabase.from("clients").delete().eq("created_by", user?.id),
+        supabase.from("user_preferences" as any).delete().eq("user_id", user?.id),
+      ]);
+
+      // Sign out user
+      await supabase.auth.signOut();
+
+      toast({
+        title: "Account Deleted",
+        description: "Your account has been permanently deleted",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -318,8 +509,12 @@ const Settings = () => {
                     </div>
                   </div>
 
-                  <Button className="w-full bg-cyber-green/20 hover:bg-cyber-green/30 border-2 border-cyber-green text-cyber-green font-share-tech">
-                    SAVE PREFERENCES
+                  <Button 
+                    onClick={saveNotificationPreferences}
+                    disabled={loading}
+                    className="w-full bg-cyber-green/20 hover:bg-cyber-green/30 border-2 border-cyber-green text-cyber-green font-share-tech"
+                  >
+                    {loading ? "SAVING..." : "SAVE PREFERENCES"}
                   </Button>
                 </div>
               </Card>
@@ -387,12 +582,40 @@ const Settings = () => {
                         <p className="text-sm text-muted-foreground mb-3">
                           Permanently delete your account and all data
                         </p>
-                        <Button
-                          variant="outline"
-                          className="border-red-500 text-red-400 hover:bg-red-500/20 font-share-tech"
-                        >
-                          DELETE ACCOUNT
-                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="border-red-500 text-red-400 hover:bg-red-500/20 font-share-tech"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              DELETE ACCOUNT
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="bg-cyber-gray border-2 border-red-500/30">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-red-400 font-orbitron">
+                                Delete Account?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription className="text-muted-foreground">
+                                This action cannot be undone. This will permanently delete your
+                                account and remove all your data from our servers including
+                                projects, clients, documents, and designs.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="border-cyber-blue text-cyber-blue hover:bg-cyber-blue/20">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={handleDeleteAccount}
+                                className="bg-red-500/20 hover:bg-red-500/30 border-2 border-red-500 text-red-400"
+                              >
+                                Delete Forever
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </div>
@@ -426,10 +649,13 @@ const Settings = () => {
                           Download a copy of your account data
                         </p>
                         <Button
+                          onClick={handleExportData}
+                          disabled={loading}
                           variant="outline"
                           className="border-cyber-green text-cyber-green hover:bg-cyber-green/20 font-share-tech"
                         >
-                          REQUEST EXPORT
+                          <Download className="w-4 h-4 mr-2" />
+                          {loading ? "EXPORTING..." : "EXPORT DATA"}
                         </Button>
                       </div>
                     </div>
@@ -440,12 +666,14 @@ const Settings = () => {
                         <div className="mt-2">
                           <div className="flex items-center justify-between text-sm mb-2">
                             <span className="text-muted-foreground">Documents & Designs</span>
-                            <span className="text-cyber-green font-mono">2.4 GB / 10 GB</span>
+                            <span className="text-cyber-green font-mono">
+                              {(storageUsage.used / 1024 / 1024 / 1024).toFixed(2)} GB / {(storageUsage.total / 1024 / 1024 / 1024).toFixed(0)} GB
+                            </span>
                           </div>
                           <div className="h-2 bg-cyber-gray rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-cyber-green to-cyber-blue"
-                              style={{ width: "24%" }}
+                              className="h-full bg-gradient-to-r from-cyber-green to-cyber-blue transition-all duration-500"
+                              style={{ width: `${Math.min((storageUsage.used / storageUsage.total) * 100, 100)}%` }}
                             />
                           </div>
                         </div>
