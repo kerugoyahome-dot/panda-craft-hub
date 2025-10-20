@@ -1,18 +1,97 @@
+import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
 import RecentProjects from "@/components/RecentProjects";
 import { Users, FolderKanban, Palette, TrendingUp } from "lucide-react";
+import { CreateProjectDialog } from "@/components/CreateProjectDialog";
+import { AddClientDialog } from "@/components/AddClientDialog";
+import { UploadDesignDialog } from "@/components/UploadDesignDialog";
+import { CreateDocumentDialog } from "@/components/CreateDocumentDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
+  const { user } = useAuth();
+  const [projectDialogOpen, setProjectDialogOpen] = useState(false);
+  const [clientDialogOpen, setClientDialogOpen] = useState(false);
+  const [designDialogOpen, setDesignDialogOpen] = useState(false);
+  const [documentDialogOpen, setDocumentDialogOpen] = useState(false);
+  const [stats, setStats] = useState({
+    projects: 0,
+    clients: 0,
+    designs: 0,
+    revenue: 0,
+  });
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      fetchStats();
+    }
+  }, [user, refreshKey]);
+
+  const fetchStats = async () => {
+    try {
+      const [projectsData, clientsData, designsData] = await Promise.all([
+        supabase
+          .from("projects")
+          .select("id", { count: "exact", head: true })
+          .eq("created_by", user?.id),
+        supabase
+          .from("clients")
+          .select("id", { count: "exact", head: true })
+          .eq("created_by", user?.id),
+        supabase
+          .from("designs")
+          .select("id", { count: "exact", head: true })
+          .eq("created_by", user?.id),
+      ]);
+
+      setStats({
+        projects: projectsData.count || 0,
+        clients: clientsData.count || 0,
+        designs: designsData.count || 0,
+        revenue: 32, // Keep as placeholder for now
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
+  const handleSuccess = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(0,191,255,0.08),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,191,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,191,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-      
-      <Navigation />
-      <Header />
+    <>
+      <CreateProjectDialog
+        open={projectDialogOpen}
+        onOpenChange={setProjectDialogOpen}
+        onSuccess={handleSuccess}
+      />
+      <AddClientDialog
+        open={clientDialogOpen}
+        onOpenChange={setClientDialogOpen}
+        onSuccess={handleSuccess}
+      />
+      <UploadDesignDialog
+        open={designDialogOpen}
+        onOpenChange={setDesignDialogOpen}
+        onSuccess={handleSuccess}
+      />
+      <CreateDocumentDialog
+        open={documentDialogOpen}
+        onOpenChange={setDocumentDialogOpen}
+        onSuccess={handleSuccess}
+      />
+
+      <div className="min-h-screen bg-black relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(0,191,255,0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,191,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,191,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        
+        <Navigation />
+        <Header />
       
       <main className="ml-20 pt-16 p-8 animate-fade-in relative z-10">
         <div className="max-w-7xl mx-auto">
@@ -34,28 +113,28 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatCard
               title="Active Projects"
-              value="24"
-              change="+12% from last month"
+              value={stats.projects.toString()}
+              change="Total projects created"
               icon={FolderKanban}
               trend="up"
             />
             <StatCard
               title="Total Clients"
-              value="48"
-              change="+8% from last month"
+              value={stats.clients.toString()}
+              change="Total clients managed"
               icon={Users}
               trend="up"
             />
             <StatCard
               title="Designs Created"
-              value="156"
-              change="+23% from last month"
+              value={stats.designs.toString()}
+              change="Total designs uploaded"
               icon={Palette}
               trend="up"
             />
             <StatCard
               title="Revenue Growth"
-              value="32%"
+              value={`${stats.revenue}%`}
               change="+5% from last quarter"
               icon={TrendingUp}
               trend="up"
@@ -65,7 +144,7 @@ const Index = () => {
           {/* Recent Projects */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <RecentProjects />
+              <RecentProjects key={refreshKey} />
             </div>
             
             <div className="space-y-6">
@@ -78,16 +157,28 @@ const Index = () => {
                 
                 <h3 className="text-lg font-bold mb-4 text-cyber-blue font-orbitron tracking-wider">QUICK ACTIONS</h3>
                 <div className="space-y-3">
-                  <button className="w-full p-3 rounded-lg bg-cyber-blue/20 text-cyber-blue-glow font-medium hover:bg-cyber-blue/30 transition-all border border-cyber-blue/50 font-share-tech hover:shadow-[0_0_20px_rgba(0,191,255,0.4)]">
+                  <button
+                    onClick={() => setProjectDialogOpen(true)}
+                    className="w-full p-3 rounded-lg bg-cyber-blue/20 text-cyber-blue-glow font-medium hover:bg-cyber-blue/30 transition-all border border-cyber-blue/50 font-share-tech hover:shadow-[0_0_20px_rgba(0,191,255,0.4)]"
+                  >
                     + NEW PROJECT
                   </button>
-                  <button className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]">
+                  <button
+                    onClick={() => setClientDialogOpen(true)}
+                    className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]"
+                  >
                     + ADD CLIENT
                   </button>
-                  <button className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]">
+                  <button
+                    onClick={() => setDesignDialogOpen(true)}
+                    className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]"
+                  >
                     + UPLOAD DESIGN
                   </button>
-                  <button className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]">
+                  <button
+                    onClick={() => setDocumentDialogOpen(true)}
+                    className="w-full p-3 rounded-lg bg-cyber-gray hover:bg-cyber-gray-light transition-all border border-cyber-blue/30 text-white font-share-tech hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]"
+                  >
                     + CREATE DOCUMENT
                   </button>
                 </div>
@@ -133,9 +224,10 @@ const Index = () => {
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+          </div>
+        </main>
+      </div>
+    </>
   );
 };
 

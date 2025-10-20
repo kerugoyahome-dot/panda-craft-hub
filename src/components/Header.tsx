@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Bell, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import {
   DropdownMenu,
@@ -10,19 +10,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SearchDialog } from "@/components/SearchDialog";
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-20 right-0 h-16 bg-black/90 backdrop-blur-xl border-b-2 border-cyber-blue/30 flex items-center justify-between px-8 z-10 shadow-[0_0_20px_rgba(0,191,255,0.2)]">
-      <div className="flex items-center gap-4 flex-1 max-w-xl">
-        <Search className="h-5 w-5 text-cyber-blue" />
-        <Input 
-          placeholder="▸ SEARCH DATABASE..." 
-          className="border-cyber-blue/30 bg-cyber-gray text-white focus-visible:ring-cyber-blue focus-visible:shadow-cyber-input font-share-tech placeholder:text-muted-foreground"
-        />
-      </div>
+    <>
+      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      <header className="fixed top-0 left-20 right-0 h-16 bg-black/90 backdrop-blur-xl border-b-2 border-cyber-blue/30 flex items-center justify-between px-8 z-10 shadow-[0_0_20px_rgba(0,191,255,0.2)]">
+        <button
+          onClick={() => setSearchOpen(true)}
+          className="flex items-center gap-4 flex-1 max-w-xl group"
+        >
+          <Search className="h-5 w-5 text-cyber-blue" />
+          <div className="w-full p-2 rounded-md border border-cyber-blue/30 bg-cyber-gray text-left text-muted-foreground font-share-tech hover:border-cyber-blue/50 transition-colors">
+            ▸ SEARCH DATABASE...
+          </div>
+        </button>
       
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" className="relative hover:bg-cyber-blue/10 hover:shadow-[0_0_15px_rgba(0,191,255,0.3)]">
@@ -55,8 +61,9 @@ const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-      </div>
-    </header>
+        </div>
+      </header>
+    </>
   );
 };
 
