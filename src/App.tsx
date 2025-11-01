@@ -7,6 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import ClientPortal from "./pages/ClientPortal";
 import Clients from "./pages/Clients";
 import Team from "./pages/Team";
 import Projects from "./pages/Projects";
@@ -32,15 +33,23 @@ const App = () => (
             <Route
               path="/"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/client-portal"
+              element={
+                <ProtectedRoute>
+                  <ClientPortal />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/clients"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Clients />
                 </ProtectedRoute>
               }
@@ -48,7 +57,7 @@ const App = () => (
             <Route
               path="/team"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Team />
                 </ProtectedRoute>
               }
@@ -56,7 +65,7 @@ const App = () => (
             <Route
               path="/projects"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Projects />
                 </ProtectedRoute>
               }
@@ -64,7 +73,7 @@ const App = () => (
             <Route
               path="/kanban/:projectId"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Kanban />
                 </ProtectedRoute>
               }
@@ -72,7 +81,7 @@ const App = () => (
             <Route
               path="/documents"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Documents />
                 </ProtectedRoute>
               }
@@ -80,7 +89,7 @@ const App = () => (
             <Route
               path="/designs"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Designs />
                 </ProtectedRoute>
               }
@@ -88,7 +97,7 @@ const App = () => (
             <Route
               path="/dev-hub"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <DevHub />
                 </ProtectedRoute>
               }
@@ -96,7 +105,7 @@ const App = () => (
             <Route
               path="/analytics"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireAdmin={true}>
                   <Analytics />
                 </ProtectedRoute>
               }
