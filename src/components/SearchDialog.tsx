@@ -85,18 +85,19 @@ export const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
 
   const handleNavigate = (type: string, id?: string) => {
     onOpenChange(false);
+    setQuery("");
     switch (type) {
       case "projects":
-        navigate("/projects");
+        navigate("/projects", { state: { highlightId: id } });
         break;
       case "clients":
-        navigate("/clients");
+        navigate("/clients", { state: { highlightId: id } });
         break;
       case "designs":
-        navigate("/designs");
+        navigate("/designs", { state: { highlightId: id } });
         break;
       case "documents":
-        navigate("/documents");
+        navigate("/documents", { state: { highlightId: id } });
         break;
     }
   };

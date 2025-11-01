@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChart3, Settings } from "lucide-react";
+import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChart3, Settings, UserCog } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -9,6 +9,7 @@ const Navigation = () => {
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
     { icon: Users, label: "Clients", path: "/clients" },
+    { icon: UserCog, label: "Team", path: "/team" },
     { icon: FolderKanban, label: "Projects", path: "/projects" },
     { icon: Palette, label: "Design", path: "/designs" },
     { icon: FileText, label: "Documents", path: "/documents" },

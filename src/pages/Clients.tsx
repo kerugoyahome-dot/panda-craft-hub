@@ -29,6 +29,7 @@ const Clients = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,19 +47,23 @@ const Clients = () => {
   }, []);
 
   const fetchClients = async () => {
-    const { data, error } = await supabase
-      .from("clients")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("clients")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    if (error) {
+      if (error) throw error;
+      setClients(data || []);
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to fetch clients",
+        description: error.message || "Failed to fetch clients",
         variant: "destructive",
       });
-    } else {
-      setClients(data || []);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -158,25 +163,43 @@ const Clients = () => {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-            <Home className="h-5 w-5" />
-          </Button>
-          <h1 className="text-3xl font-bold">Clients</h1>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setEditingClient(null)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Client
+    <div className="min-h-screen bg-gradient-to-br from-background via-cyber-gray/10 to-background">
+      <div className="p-8">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => navigate("/")}
+              className="hover:bg-cyber-blue/10"
+            >
+              <Home className="h-5 w-5 text-cyber-blue" />
             </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>{editingClient ? "Edit Client" : "Add New Client"}</DialogTitle>
-            </DialogHeader>
+            <div>
+              <h1 className="text-4xl font-bold font-orbitron text-cyber-blue-glow mb-2">
+                CLIENT DATABASE
+              </h1>
+              <p className="text-muted-foreground font-share-tech">
+                Manage all client information and status
+              </p>
+            </div>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={() => setEditingClient(null)}
+                className="bg-cyber-blue/20 border-2 border-cyber-blue text-cyber-blue hover:bg-cyber-blue/30 font-share-tech shadow-[0_0_20px_rgba(0,191,255,0.3)]"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                ADD CLIENT
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md bg-cyber-gray border-2 border-cyber-blue/30">
+              <DialogHeader>
+                <DialogTitle className="font-orbitron text-cyber-blue">
+                  {editingClient ? "EDIT CLIENT" : "ADD NEW CLIENT"}
+                </DialogTitle>
+              </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="name">Name *</Label>
@@ -243,62 +266,85 @@ const Clients = () => {
                 </Button>
               </div>
             </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All Clients</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {clients.map((client) => (
-                <TableRow key={client.id}>
-                  <TableCell className="font-medium">{client.name}</TableCell>
-                  <TableCell>{client.company || "-"}</TableCell>
-                  <TableCell>{client.email || "-"}</TableCell>
-                  <TableCell>{client.phone || "-"}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusColor(client.status)}>
-                      {client.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(client)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(client.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+        <Card className="bg-cyber-gray/50 border-2 border-cyber-blue/30 shadow-[0_0_30px_rgba(0,191,255,0.1)]">
+          <CardHeader>
+            <CardTitle className="font-orbitron text-cyber-blue">
+              ALL CLIENTS ({clients.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="text-center py-8 text-cyber-blue font-share-tech">
+                LOADING CLIENT DATABASE...
+              </div>
+            ) : clients.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground font-share-tech">
+                NO CLIENTS FOUND - ADD YOUR FIRST CLIENT
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-cyber-blue/30">
+                    <TableHead className="font-share-tech text-cyber-blue">NAME</TableHead>
+                    <TableHead className="font-share-tech text-cyber-blue">COMPANY</TableHead>
+                    <TableHead className="font-share-tech text-cyber-blue">EMAIL</TableHead>
+                    <TableHead className="font-share-tech text-cyber-blue">PHONE</TableHead>
+                    <TableHead className="font-share-tech text-cyber-blue">STATUS</TableHead>
+                    <TableHead className="font-share-tech text-cyber-blue">ACTIONS</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {clients.map((client) => (
+                    <TableRow key={client.id} className="border-cyber-blue/20">
+                      <TableCell className="font-medium text-white font-share-tech">
+                        {client.name}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {client.company || "-"}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {client.email || "-"}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {client.phone || "-"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusColor(client.status)} className="font-share-tech">
+                          {client.status.toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(client)}
+                            className="hover:bg-cyber-blue/10 hover:text-cyber-blue"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(client.id)}
+                            className="hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
