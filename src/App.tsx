@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ClientPortal from "./pages/ClientPortal";
+import TeamDashboard from "./pages/TeamDashboard";
 import Clients from "./pages/Clients";
 import Team from "./pages/Team";
 import Projects from "./pages/Projects";
@@ -43,6 +44,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <ClientPortal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/team-dashboard"
+              element={
+                <ProtectedRoute>
+                  <TeamDashboard />
                 </ProtectedRoute>
               }
             />

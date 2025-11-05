@@ -10,6 +10,7 @@ interface AuthContextType {
   loading: boolean;
   userRole: string | null;
   isAdmin: boolean;
+  isTeam: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isTeam, setIsTeam] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setUserRole(null);
           setIsAdmin(false);
+          setIsTeam(false);
         }
         
         setLoading(false);
@@ -72,14 +75,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!error && data) {
         setUserRole(data.role);
         setIsAdmin(data.role === 'admin');
+        setIsTeam(data.role === 'team');
       } else {
         setUserRole('client');
         setIsAdmin(false);
+        setIsTeam(false);
       }
     } catch (error) {
       console.error('Error fetching user role:', error);
       setUserRole('client');
       setIsAdmin(false);
+      setIsTeam(false);
     }
   };
 
@@ -143,7 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, userRole, isAdmin, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, userRole, isAdmin, isTeam, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { FolderKanban, FileText, Palette, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
+import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Project {
@@ -22,66 +22,32 @@ interface Project {
   created_at: string;
 }
 
-interface Document {
-  id: string;
-  title: string;
-  file_name: string | null;
-  created_at: string;
-}
-
-interface Design {
-  id: string;
-  title: string;
-  description: string | null;
-  created_at: string;
-}
-
-const ClientPortal = () => {
+const TeamDashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [designs, setDesigns] = useState<Design[]>([]);
   const [loading, setLoading] = useState(true);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchClientData();
+    fetchTeamProjects();
   }, [user]);
 
-  const fetchClientData = async () => {
+  const fetchTeamProjects = async () => {
     if (!user) return;
 
     try {
       setLoading(true);
 
-      // Fetch projects where client is the creator
+      // Fetch projects assigned to this team member
       const { data: projectsData } = await supabase
         .from("projects")
         .select("*")
-        .eq("created_by", user.id)
+        .or(`assigned_team_id.eq.${user.id},created_by.eq.${user.id}`)
         .order("created_at", { ascending: false });
 
-      // Fetch documents
-      const { data: documentsData } = await supabase
-        .from("documents")
-        .select("*")
-        .eq("created_by", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
-
-      // Fetch designs
-      const { data: designsData } = await supabase
-        .from("designs")
-        .select("*")
-        .eq("created_by", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
-
       setProjects(projectsData || []);
-      setDocuments(documentsData || []);
-      setDesigns(designsData || []);
     } catch (error) {
-      console.error("Error fetching client data:", error);
+      console.error("Error fetching team projects:", error);
     } finally {
       setLoading(false);
     }
@@ -96,7 +62,7 @@ const ClientPortal = () => {
       case "planning":
         return "outline";
       default:
-    return "outline";
+        return "outline";
     }
   };
 
@@ -116,7 +82,7 @@ const ClientPortal = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-cyber-gray/10 to-background">
         <div className="text-cyber-blue font-share-tech text-xl animate-pulse">
-          LOADING YOUR PORTAL...
+          LOADING TEAM DASHBOARD...
         </div>
       </div>
     );
@@ -132,7 +98,7 @@ const ClientPortal = () => {
           </div>
           <div>
             <h1 className="text-lg font-bold font-orbitron text-cyber-blue-glow">
-              CLIENT PORTAL
+              TEAM DASHBOARD
             </h1>
             <p className="text-xs text-cyber-green font-share-tech">
               {user?.user_metadata?.full_name || user?.email}
@@ -154,10 +120,10 @@ const ClientPortal = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold font-orbitron text-cyber-blue-glow mb-2">
-            WELCOME BACK, {user?.user_metadata?.full_name?.toUpperCase() || "CLIENT"}
+            ASSIGNED PROJECTS
           </h2>
           <p className="text-muted-foreground font-share-tech">
-            Monitor your projects and access deliverables
+            Track your team's assigned work and deliverables
           </p>
         </div>
 
@@ -165,14 +131,14 @@ const ClientPortal = () => {
         <div className="mb-8">
           <h3 className="text-xl font-bold font-orbitron text-cyber-blue mb-4 flex items-center gap-2">
             <FolderKanban className="h-5 w-5" />
-            YOUR PROJECTS ({projects.length})
+            ACTIVE PROJECTS ({projects.length})
           </h3>
 
           {projects.length === 0 ? (
             <Card className="bg-cyber-gray/50 border-2 border-cyber-blue/30">
               <CardContent className="py-12 text-center">
                 <p className="text-muted-foreground font-share-tech">
-                  No projects assigned yet. Contact your project manager for more information.
+                  No projects assigned yet. Check back later for new assignments.
                 </p>
               </CardContent>
             </Card>
@@ -216,7 +182,7 @@ const ClientPortal = () => {
                             onClick={() => window.open(project.live_url!, "_blank")}
                           >
                             <ExternalLink className="h-3 w-3 mr-1" />
-                            Live Preview
+                            Live
                           </Button>
                         )}
                         {project.repository_url && (
@@ -227,7 +193,7 @@ const ClientPortal = () => {
                             onClick={() => window.open(project.repository_url!, "_blank")}
                           >
                             <Github className="h-3 w-3 mr-1" />
-                            Repository
+                            Repo
                           </Button>
                         )}
                       </div>
@@ -273,83 +239,9 @@ const ClientPortal = () => {
             </div>
           )}
         </div>
-
-        {/* Documents & Designs Grid */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Documents */}
-          <Card className="bg-cyber-gray/50 border-2 border-cyber-blue/30 shadow-[0_0_20px_rgba(0,191,255,0.1)]">
-            <CardHeader>
-              <CardTitle className="font-orbitron text-cyber-blue flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                RECENT DOCUMENTS
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {documents.length === 0 ? (
-                <p className="text-muted-foreground font-share-tech text-center py-8">
-                  No documents available
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {documents.map((doc) => (
-                    <div
-                      key={doc.id}
-                      className="p-3 rounded-lg bg-cyber-gray/30 border border-cyber-blue/20 hover:border-cyber-blue/40 transition-all"
-                    >
-                      <p className="font-medium text-white font-share-tech text-sm">
-                        {doc.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(doc.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Designs */}
-          <Card className="bg-cyber-gray/50 border-2 border-cyber-blue/30 shadow-[0_0_20px_rgba(0,191,255,0.1)]">
-            <CardHeader>
-              <CardTitle className="font-orbitron text-cyber-blue flex items-center gap-2">
-                <Palette className="h-5 w-5" />
-                RECENT DESIGNS
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {designs.length === 0 ? (
-                <p className="text-muted-foreground font-share-tech text-center py-8">
-                  No designs available
-                </p>
-              ) : (
-                <div className="space-y-3">
-                  {designs.map((design) => (
-                    <div
-                      key={design.id}
-                      className="p-3 rounded-lg bg-cyber-gray/30 border border-cyber-blue/20 hover:border-cyber-blue/40 transition-all"
-                    >
-                      <p className="font-medium text-white font-share-tech text-sm">
-                        {design.title}
-                      </p>
-                      {design.description && (
-                        <p className="text-xs text-muted-foreground line-clamp-1">
-                          {design.description}
-                        </p>
-                      )}
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(design.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
       </main>
     </div>
   );
 };
 
-export default ClientPortal;
+export default TeamDashboard;

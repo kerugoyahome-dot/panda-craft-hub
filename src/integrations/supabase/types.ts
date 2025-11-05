@@ -286,40 +286,52 @@ export type Database = {
       }
       projects: {
         Row: {
+          assigned_team_id: string | null
           client_id: string | null
           created_at: string
           created_by: string
           description: string | null
           end_date: string | null
           id: string
+          live_url: string | null
           name: string
+          product_type: string | null
           progress: number
+          repository_url: string | null
           start_date: string | null
           status: string
           updated_at: string
         }
         Insert: {
+          assigned_team_id?: string | null
           client_id?: string | null
           created_at?: string
           created_by: string
           description?: string | null
           end_date?: string | null
           id?: string
+          live_url?: string | null
           name: string
+          product_type?: string | null
           progress?: number
+          repository_url?: string | null
           start_date?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          assigned_team_id?: string | null
           client_id?: string | null
           created_at?: string
           created_by?: string
           description?: string | null
           end_date?: string | null
           id?: string
+          live_url?: string | null
           name?: string
+          product_type?: string | null
           progress?: number
+          repository_url?: string | null
           start_date?: string | null
           status?: string
           updated_at?: string
@@ -381,6 +393,60 @@ export type Database = {
           },
         ]
       }
+      team_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          member_id: string
+          team_lead_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          member_id: string
+          team_lead_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          member_id?: string
+          team_lead_id?: string
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string | null
+          email_notifications: boolean | null
+          id: string
+          project_updates: boolean | null
+          push_notifications: boolean | null
+          security_alerts: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          project_updates?: boolean | null
+          push_notifications?: boolean | null
+          security_alerts?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          project_updates?: boolean | null
+          push_notifications?: boolean | null
+          security_alerts?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -416,7 +482,13 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "developer" | "designer" | "writer" | "client"
+      app_role:
+        | "admin"
+        | "developer"
+        | "designer"
+        | "writer"
+        | "client"
+        | "team"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -544,7 +616,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "developer", "designer", "writer", "client"],
+      app_role: ["admin", "developer", "designer", "writer", "client", "team"],
     },
   },
 } as const
