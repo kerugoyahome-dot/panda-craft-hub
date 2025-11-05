@@ -11,9 +11,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SearchDialog } from "@/components/SearchDialog";
+import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
@@ -31,6 +32,8 @@ const Header = () => {
         </button>
       
       <div className="flex items-center gap-4">
+        {isAdmin && <AdminDashboardSwitcher />}
+        
         <Button variant="ghost" size="icon" className="relative hover:bg-cyber-blue/10 hover:shadow-[0_0_15px_rgba(0,191,255,0.3)]">
           <Bell className="h-5 w-5 text-cyber-blue" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-cyber-green rounded-full animate-pulse"></span>

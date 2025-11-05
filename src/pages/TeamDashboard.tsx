@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 
 interface Project {
   id: string;
@@ -25,7 +26,7 @@ interface Project {
 const TeamDashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -106,14 +107,18 @@ const TeamDashboard = () => {
           </div>
         </div>
 
-        <Button
-          onClick={signOut}
-          variant="ghost"
-          className="text-cyber-blue hover:bg-cyber-blue/10 font-share-tech"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          LOGOUT
-        </Button>
+        <div className="flex items-center gap-3">
+          {isAdmin && <AdminDashboardSwitcher />}
+          
+          <Button
+            onClick={signOut}
+            variant="ghost"
+            className="text-cyber-blue hover:bg-cyber-blue/10 font-share-tech"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            LOGOUT
+          </Button>
+        </div>
       </header>
 
       <main className="pt-24 px-8 pb-8">
@@ -137,8 +142,11 @@ const TeamDashboard = () => {
           {projects.length === 0 ? (
             <Card className="bg-cyber-gray/50 border-2 border-cyber-blue/30">
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground font-share-tech">
-                  No projects assigned yet. Check back later for new assignments.
+                <p className="text-muted-foreground font-share-tech text-lg mb-2">
+                  📋 No projects assigned yet
+                </p>
+                <p className="text-muted-foreground font-share-tech text-sm">
+                  Your admin will assign work to your team soon. Check back later!
                 </p>
               </CardContent>
             </Card>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { FolderKanban, FileText, Palette, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 
 interface Project {
   id: string;
@@ -41,7 +42,7 @@ const ClientPortal = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,26 +55,42 @@ const ClientPortal = () => {
     try {
       setLoading(true);
 
-      // Fetch projects where client is the creator
+      // Fetch client record for the current user
+      const { data: clientData } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("created_by", user.id)
+        .maybeSingle();
+
+      if (!clientData) {
+        setProjects([]);
+        setDocuments([]);
+        setDesigns([]);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch projects assigned to this client
       const { data: projectsData } = await supabase
         .from("projects")
         .select("*")
-        .eq("created_by", user.id)
+        .eq("client_id", clientData.id)
         .order("created_at", { ascending: false });
 
-      // Fetch documents
+      // Fetch documents for client's projects
+      const projectIds = projectsData?.map(p => p.id) || [];
       const { data: documentsData } = await supabase
         .from("documents")
         .select("*")
-        .eq("created_by", user.id)
+        .in("project_id", projectIds.length > 0 ? projectIds : [''])
         .order("created_at", { ascending: false })
         .limit(5);
 
-      // Fetch designs
+      // Fetch designs for client's projects
       const { data: designsData } = await supabase
         .from("designs")
         .select("*")
-        .eq("created_by", user.id)
+        .in("project_id", projectIds.length > 0 ? projectIds : [''])
         .order("created_at", { ascending: false })
         .limit(5);
 
@@ -140,14 +157,18 @@ const ClientPortal = () => {
           </div>
         </div>
 
-        <Button
-          onClick={signOut}
-          variant="ghost"
-          className="text-cyber-blue hover:bg-cyber-blue/10 font-share-tech"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          LOGOUT
-        </Button>
+        <div className="flex items-center gap-3">
+          {isAdmin && <AdminDashboardSwitcher />}
+          
+          <Button
+            onClick={signOut}
+            variant="ghost"
+            className="text-cyber-blue hover:bg-cyber-blue/10 font-share-tech"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            LOGOUT
+          </Button>
+        </div>
       </header>
 
       <main className="pt-24 px-8 pb-8">
@@ -171,8 +192,11 @@ const ClientPortal = () => {
           {projects.length === 0 ? (
             <Card className="bg-cyber-gray/50 border-2 border-cyber-blue/30">
               <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground font-share-tech">
-                  No projects assigned yet. Contact your project manager for more information.
+                <p className="text-muted-foreground font-share-tech text-lg mb-2">
+                  📋 No projects assigned yet
+                </p>
+                <p className="text-muted-foreground font-share-tech text-sm">
+                  Your admin will assign projects to you soon. Check back later!
                 </p>
               </CardContent>
             </Card>
