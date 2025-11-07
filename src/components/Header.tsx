@@ -31,8 +31,12 @@ const Header = () => {
           </div>
         </button>
       
-      <div className="flex items-center gap-4">
-        {isAdmin && <AdminDashboardSwitcher />}
+      <div className="flex items-center gap-6">
+        {isAdmin && (
+          <div className="flex items-center gap-2">
+            <AdminDashboardSwitcher />
+          </div>
+        )}
         
         <Button variant="ghost" size="icon" className="relative hover:bg-cyber-blue/10 hover:shadow-[0_0_15px_rgba(0,191,255,0.3)]">
           <Bell className="h-5 w-5 text-cyber-blue" />

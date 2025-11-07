@@ -43,11 +43,13 @@ const AdminDashboardSwitcher = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="gap-2 bg-cyber-gray/30 border-cyber-blue/30 hover:border-cyber-blue/50 text-cyber-blue hover:bg-cyber-blue/10 font-share-tech"
+          className="gap-2 bg-gradient-to-r from-cyber-blue/20 to-cyber-green/20 border-2 border-cyber-blue hover:border-cyber-green text-white hover:shadow-[0_0_20px_rgba(0,191,255,0.5)] font-share-tech transition-all px-4 py-2"
         >
-          <Eye className="h-4 w-4" />
-          <span className="hidden sm:inline">{currentDashboard.name}</span>
-          <span className="sm:hidden">View</span>
+          <Eye className="h-5 w-5 text-cyber-blue animate-pulse" />
+          <div className="flex flex-col items-start">
+            <span className="text-xs text-cyber-green">SWITCH VIEW</span>
+            <span className="text-sm font-bold">{currentDashboard.name}</span>
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 bg-cyber-gray border-cyber-blue/30">
