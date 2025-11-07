@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps)
       return;
     }
 
-    // Role-based routing after authentication is loaded
+    // Only do role-based routing once role is loaded
     if (!loading && user && userRole !== null) {
       // If admin is required but user is not admin, redirect based on role
       if (requireAdmin && !isAdmin) {
@@ -60,6 +60,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps)
     }
   }, [user, loading, navigate, isAdmin, isTeam, userRole, location.pathname, requireAdmin]);
 
+  // Show loading only while checking session, not while fetching role
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-cyber-gray/10 to-background">
@@ -72,6 +73,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps)
     return null;
   }
 
+  // Show content immediately, role-based redirects happen when role loads
   return <>{children}</>;
 };
 
