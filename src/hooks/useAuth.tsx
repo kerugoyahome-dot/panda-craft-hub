@@ -69,13 +69,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { data, error } = await supabase
         .from('user_roles')
         .select('role')
-        .eq('user_id', userId)
-        .maybeSingle();
+        .eq('user_id', userId);
 
-      if (!error && data) {
-        setUserRole(data.role);
-        setIsAdmin(data.role === 'admin');
-        setIsTeam(data.role === 'team');
+      if (!error && data && data.length > 0) {
+        // Check for admin role first (highest priority)
+        const hasAdmin = data.some(r => r.role === 'admin');
+        const hasTeam = data.some(r => r.role === 'team');
+        
+        if (hasAdmin) {
+          setUserRole('admin');
+          setIsAdmin(true);
+          setIsTeam(false);
+        } else if (hasTeam) {
+          setUserRole('team');
+          setIsAdmin(false);
+          setIsTeam(true);
+        } else {
+          setUserRole('client');
+          setIsAdmin(false);
+          setIsTeam(false);
+        }
       } else {
         setUserRole('client');
         setIsAdmin(false);
