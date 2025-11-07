@@ -37,16 +37,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (mounted) {
         setSession(session);
         setUser(session?.user ?? null);
+        setLoading(false); // Set loading false immediately after session check
         
+        // Fetch role in background without blocking
         if (session?.user) {
-          await fetchUserRole(session.user.id);
+          fetchUserRole(session.user.id);
         } else {
           setUserRole(null);
           setIsAdmin(false);
           setIsTeam(false);
         }
-        
-        setLoading(false);
       }
     };
 
@@ -54,20 +54,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
+          setLoading(false);
           
+          // Fetch role in background
           if (session?.user) {
-            await fetchUserRole(session.user.id);
+            fetchUserRole(session.user.id);
           } else {
             setUserRole(null);
             setIsAdmin(false);
             setIsTeam(false);
           }
-          
-          setLoading(false);
         }
       }
     );
