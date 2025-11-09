@@ -30,31 +30,31 @@ const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps)
         return;
       }
 
+      // Admins can access all routes - no restrictions for preview mode
+      if (isAdmin) {
+        return;
+      }
+
+      // Non-admin role-based routing
       // Redirect users to their appropriate dashboard from root
       if (location.pathname === '/') {
-        if (!isAdmin && !isTeam) {
+        if (!isTeam) {
           navigate('/client-portal');
           return;
         }
-        if (isTeam) {
-          navigate('/team-dashboard');
-          return;
-        }
+        navigate('/team-dashboard');
+        return;
       }
 
       // Prevent non-team users from accessing team dashboard
-      if (location.pathname === '/team-dashboard' && !isTeam && !isAdmin) {
+      if (location.pathname === '/team-dashboard' && !isTeam) {
         navigate('/client-portal');
         return;
       }
 
-      // Prevent non-clients from accessing client portal (except admin can access all)
-      if (location.pathname === '/client-portal' && (isTeam || isAdmin)) {
-        if (isAdmin) {
-          navigate('/');
-        } else {
-          navigate('/team-dashboard');
-        }
+      // Prevent team users from accessing client portal
+      if (location.pathname === '/client-portal' && isTeam) {
+        navigate('/team-dashboard');
         return;
       }
     }
