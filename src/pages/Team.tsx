@@ -5,12 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Home, Shield, UserCheck, User as UserIcon } from "lucide-react";
+import { Home, Shield, UserCheck, User as UserIcon, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Header from "@/components/Header";
+import { AddTeamMemberDialog } from "@/components/AddTeamMemberDialog";
 
 interface TeamMember {
   id: string;
@@ -25,6 +26,7 @@ interface TeamMember {
 const Team = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -134,6 +136,12 @@ const Team = () => {
       <div className="ml-20">
         <Header />
         <main className="pt-24 px-8 pb-8">
+          <AddTeamMemberDialog
+            open={addMemberDialogOpen}
+            onOpenChange={setAddMemberDialogOpen}
+            onSuccess={fetchTeamMembers}
+          />
+
           <div className="flex justify-between items-center mb-8">
             <div className="flex items-center gap-4">
               <Button 
@@ -153,6 +161,13 @@ const Team = () => {
                 </p>
               </div>
             </div>
+            <Button
+              onClick={() => setAddMemberDialogOpen(true)}
+              className="bg-gradient-to-r from-cyber-blue to-cyber-green hover:shadow-[0_0_20px_rgba(0,191,255,0.5)] font-share-tech"
+            >
+              <UserPlus className="mr-2 h-5 w-5" />
+              ADD TEAM MEMBER
+            </Button>
           </div>
 
           <div className="grid gap-6">

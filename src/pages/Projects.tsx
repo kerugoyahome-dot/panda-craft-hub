@@ -52,6 +52,26 @@ const Projects = () => {
   useEffect(() => {
     fetchProjects();
     fetchClients();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('projects-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'projects',
+        },
+        () => {
+          fetchProjects();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchProjects = async () => {

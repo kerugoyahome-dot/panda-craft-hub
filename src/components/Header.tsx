@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Search, User, LogOut } from "lucide-react";
+import { Bell, Search, User, LogOut, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -12,14 +12,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SearchDialog } from "@/components/SearchDialog";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
+import { LockScreen } from "@/components/LockScreen";
 
 const Header = () => {
   const { user, signOut, isAdmin } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [lockOpen, setLockOpen] = useState(false);
 
   return (
     <>
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      <LockScreen open={lockOpen} onOpenChange={setLockOpen} />
       <header className="fixed top-0 left-20 right-0 h-16 bg-black/90 backdrop-blur-xl border-b-2 border-cyber-blue/30 flex items-center justify-between px-8 z-10 shadow-[0_0_20px_rgba(0,191,255,0.2)]">
         <button
           onClick={() => setSearchOpen(true)}
@@ -61,6 +64,10 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-56 bg-cyber-gray border-2 border-cyber-blue/30">
               <DropdownMenuLabel className="font-orbitron text-cyber-blue">ACCOUNT ACCESS</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-cyber-blue/20" />
+              <DropdownMenuItem onClick={() => setLockOpen(true)} className="cursor-pointer font-share-tech hover:bg-cyber-blue/10">
+                <Lock className="mr-2 h-4 w-4 text-cyber-blue" />
+                <span className="text-cyber-blue">LOCK SCREEN</span>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={signOut} className="text-destructive cursor-pointer font-share-tech hover:bg-destructive/10">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>TERMINATE SESSION</span>

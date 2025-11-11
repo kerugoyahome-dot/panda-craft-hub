@@ -14,6 +14,27 @@ const RecentProjects = () => {
   useEffect(() => {
     if (user) {
       fetchProjects();
+      
+      // Set up real-time subscription
+      const channel = supabase
+        .channel('projects-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'projects',
+            filter: `created_by=eq.${user.id}`,
+          },
+          () => {
+            fetchProjects();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
