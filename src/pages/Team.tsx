@@ -119,8 +119,10 @@ const Team = () => {
     switch (role) {
       case "admin":
         return { variant: "default" as const, icon: Shield, color: "text-cyber-blue" };
-      case "moderator":
+      case "team":
         return { variant: "secondary" as const, icon: UserCheck, color: "text-cyber-green" };
+      case "moderator":
+        return { variant: "secondary" as const, icon: UserCheck, color: "text-purple-400" };
       default:
         return { variant: "outline" as const, icon: UserIcon, color: "text-muted-foreground" };
     }
@@ -213,6 +215,7 @@ const Team = () => {
                                 </SelectTrigger>
                                 <SelectContent className="bg-cyber-gray border-cyber-blue/30">
                                   <SelectItem value="admin" className="font-share-tech">ADMIN</SelectItem>
+                                  <SelectItem value="team" className="font-share-tech">TEAM</SelectItem>
                                   <SelectItem value="moderator" className="font-share-tech">MODERATOR</SelectItem>
                                   <SelectItem value="client" className="font-share-tech">CLIENT</SelectItem>
                                 </SelectContent>
