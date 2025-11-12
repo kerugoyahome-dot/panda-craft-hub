@@ -47,6 +47,58 @@ const ClientPortal = () => {
 
   useEffect(() => {
     fetchClientData();
+
+    // Set up real-time subscriptions
+    const projectsChannel = supabase
+      .channel('client-projects')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'projects'
+        },
+        () => {
+          fetchClientData();
+        }
+      )
+      .subscribe();
+
+    const documentsChannel = supabase
+      .channel('client-documents')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'documents'
+        },
+        () => {
+          fetchClientData();
+        }
+      )
+      .subscribe();
+
+    const designsChannel = supabase
+      .channel('client-designs')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'designs'
+        },
+        () => {
+          fetchClientData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(projectsChannel);
+      supabase.removeChannel(documentsChannel);
+      supabase.removeChannel(designsChannel);
+    };
   }, [user]);
 
   const fetchClientData = async () => {
@@ -55,11 +107,11 @@ const ClientPortal = () => {
     try {
       setLoading(true);
 
-      // Fetch client record for the current user
+      // Fetch client record linked to the current user
       const { data: clientData } = await supabase
         .from("clients")
         .select("id")
-        .eq("created_by", user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
 
       if (!clientData) {
@@ -84,7 +136,7 @@ const ClientPortal = () => {
         .select("*")
         .in("project_id", projectIds.length > 0 ? projectIds : [''])
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(10);
 
       // Fetch designs for client's projects
       const { data: designsData } = await supabase
@@ -92,7 +144,7 @@ const ClientPortal = () => {
         .select("*")
         .in("project_id", projectIds.length > 0 ? projectIds : [''])
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(10);
 
       setProjects(projectsData || []);
       setDocuments(documentsData || []);
