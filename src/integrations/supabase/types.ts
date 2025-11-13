@@ -260,6 +260,57 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          is_admin_reply: boolean
+          message: string
+          project_id: string | null
+          read_by_admin: boolean
+          sender_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          is_admin_reply?: boolean
+          message: string
+          project_id?: string | null
+          read_by_admin?: boolean
+          sender_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          is_admin_reply?: boolean
+          message?: string
+          project_id?: string | null
+          read_by_admin?: boolean
+          sender_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

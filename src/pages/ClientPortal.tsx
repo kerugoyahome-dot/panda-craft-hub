@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { FolderKanban, FileText, Palette, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
+import ClientMessaging from "@/components/ClientMessaging";
 
 interface Project {
   id: string;
@@ -42,6 +43,7 @@ const ClientPortal = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [designs, setDesigns] = useState<Design[]>([]);
   const [loading, setLoading] = useState(true);
+  const [clientId, setClientId] = useState<string | null>(null);
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -118,9 +120,12 @@ const ClientPortal = () => {
         setProjects([]);
         setDocuments([]);
         setDesigns([]);
+        setClientId(null);
         setLoading(false);
         return;
       }
+
+      setClientId(clientData.id);
 
       // Fetch projects assigned to this client
       const { data: projectsData } = await supabase
@@ -349,6 +354,13 @@ const ClientPortal = () => {
             </div>
           )}
         </div>
+
+        {/* Messaging Section */}
+        {clientId && (
+          <div className="mb-8">
+            <ClientMessaging clientId={clientId} />
+          </div>
+        )}
 
         {/* Documents & Designs Grid */}
         <div className="grid gap-6 md:grid-cols-2">
