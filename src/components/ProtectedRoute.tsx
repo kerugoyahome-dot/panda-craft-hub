@@ -31,7 +31,9 @@ const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps)
       }
 
       // Admins can access all routes - no restrictions for preview mode
+      // Allow admins to view all dashboards for monitoring
       if (isAdmin) {
+        console.log('Admin accessing:', location.pathname);
         return;
       }
 

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LayoutDashboard, Users, Briefcase, Eye } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 const AdminDashboardSwitcher = () => {
   const navigate = useNavigate();
@@ -38,6 +38,12 @@ const AdminDashboardSwitcher = () => {
 
   const currentDashboard = dashboards.find(d => d.path === location.pathname) || dashboards[0];
 
+  const handleDashboardSwitch = (path: string, name: string) => {
+    console.log('Switching to:', path, name);
+    navigate(path);
+    toast.success(`Switched to ${name}`);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -64,10 +70,14 @@ const AdminDashboardSwitcher = () => {
           return (
             <DropdownMenuItem
               key={dashboard.path}
-              onClick={() => navigate(dashboard.path)}
+              onClick={(e) => {
+                e.preventDefault();
+                handleDashboardSwitch(dashboard.path, dashboard.name);
+              }}
+              disabled={isActive}
               className={`cursor-pointer font-share-tech ${
                 isActive 
-                  ? "bg-cyber-blue/20 text-cyber-blue" 
+                  ? "bg-cyber-blue/20 text-cyber-blue opacity-50 cursor-not-allowed" 
                   : "text-white hover:bg-cyber-blue/10 hover:text-cyber-blue"
               }`}
             >
@@ -76,6 +86,7 @@ const AdminDashboardSwitcher = () => {
                 <span className="font-medium">{dashboard.name}</span>
                 <span className="text-xs text-muted-foreground">
                   {dashboard.description}
+                  {isActive && " (Current)"}
                 </span>
               </div>
             </DropdownMenuItem>
