@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, ArrowLeft, Pencil, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import Navigation from "@/components/Navigation";
+import Header from "@/components/Header";
 
 interface Task {
   id: string;
@@ -202,12 +204,21 @@ const Kanban = () => {
   ];
 
   return (
-    <div className="p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" onClick={() => navigate("/projects")}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <h1 className="text-3xl font-bold">{project?.name || "Loading..."}</h1>
+    <div className="min-h-screen bg-black">
+      <Navigation />
+      <Header />
+      <div className="ml-20 pt-16 p-8">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => navigate("/projects")} className="hover:bg-cyber-blue/10">
+            <ArrowLeft className="h-5 w-5 text-cyber-blue" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">
+              {project?.name || "Loading..."} - KANBAN
+            </h1>
+            <p className="text-muted-foreground font-share-tech">Task management board</p>
+          </div>
+        </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => setEditingTask(null)} className="ml-auto">

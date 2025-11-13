@@ -13,6 +13,8 @@ import { Progress } from "@/components/ui/progress";
 import { Plus, Pencil, Trash2, KanbanSquare, Home } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import Navigation from "@/components/Navigation";
+import Header from "@/components/Header";
 
 interface Project {
   id: string;
@@ -221,13 +223,15 @@ const Projects = () => {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-            <Home className="h-5 w-5" />
-          </Button>
-          <h1 className="text-3xl font-bold">Projects</h1>
+    <div className="min-h-screen bg-black">
+      <Navigation />
+      <Header />
+      <div className="ml-20 pt-16 p-8">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">PROJECTS</h1>
+            <p className="text-muted-foreground font-share-tech">Manage all projects</p>
+          </div>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

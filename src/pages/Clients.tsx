@@ -13,6 +13,8 @@ import { Plus, Pencil, Trash2, Home } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Navigation from "@/components/Navigation";
+import Header from "@/components/Header";
 
 interface Client {
   id: string;
@@ -163,26 +165,18 @@ const Clients = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-cyber-gray/10 to-background">
-      <div className="p-8">
+    <div className="min-h-screen bg-black">
+      <Navigation />
+      <Header />
+      <div className="ml-20 pt-16 p-8">
         <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate("/")}
-              className="hover:bg-cyber-blue/10"
-            >
-              <Home className="h-5 w-5 text-cyber-blue" />
-            </Button>
-            <div>
-              <h1 className="text-4xl font-bold font-orbitron text-cyber-blue-glow mb-2">
-                CLIENT DATABASE
-              </h1>
-              <p className="text-muted-foreground font-share-tech">
-                Manage all client information and status
-              </p>
-            </div>
+          <div>
+            <h1 className="text-4xl font-bold font-orbitron text-cyber-blue-glow mb-2">
+              CLIENT DATABASE
+            </h1>
+            <p className="text-muted-foreground font-share-tech">
+              Manage all client information and status
+            </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
