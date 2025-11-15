@@ -8,10 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Home, Shield, UserCheck, User as UserIcon, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { usePresence } from "@/hooks/usePresence";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Header from "@/components/Header";
 import { AddTeamMemberDialog } from "@/components/AddTeamMemberDialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PresenceIndicator } from "@/components/PresenceIndicator";
 
 interface TeamMember {
   id: string;
@@ -29,6 +32,7 @@ const Team = () => {
   const [addMemberDialogOpen, setAddMemberDialogOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { isOnline } = usePresence();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -204,8 +208,21 @@ const Team = () => {
                         const RoleIcon = roleBadge.icon;
                         return (
                           <TableRow key={member.id} className="border-cyber-blue/20">
-                            <TableCell className="font-medium text-white font-share-tech">
-                              {member.full_name || "UNNAMED USER"}
+                            <TableCell className="font-medium font-share-tech">
+                              <div className="flex items-center gap-3">
+                                <div className="relative">
+                                  <Avatar>
+                                    <AvatarImage src={member.avatar_url || undefined} />
+                                    <AvatarFallback className="bg-cyber-blue/20 text-cyber-blue">
+                                      {member.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div className="absolute -bottom-1 -right-1">
+                                    <PresenceIndicator isOnline={isOnline(member.id)} size="md" />
+                                  </div>
+                                </div>
+                                <span className="text-white">{member.full_name || "UNNAMED USER"}</span>
+                              </div>
                             </TableCell>
                             <TableCell className="text-muted-foreground">
                               {member.email}
