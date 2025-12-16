@@ -21,10 +21,20 @@ interface TeamMember {
   full_name: string | null;
   avatar_url: string | null;
   department: string | null;
+  department_type: string | null;
   created_at: string;
   email?: string;
   role?: string;
 }
+
+const DEPARTMENTS = [
+  { value: "financial", label: "Financial" },
+  { value: "graphic_design", label: "Graphic Design" },
+  { value: "developers", label: "Developers" },
+  { value: "advertising", label: "Advertising" },
+  { value: "compliance", label: "Compliance" },
+  { value: "management", label: "Management" },
+];
 
 const Team = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -46,7 +56,7 @@ const Team = () => {
       // Fetch profiles
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("*")
+        .select("id, full_name, avatar_url, department, department_type, created_at")
         .order("created_at", { ascending: false });
 
       if (profilesError) throw profilesError;
@@ -116,6 +126,30 @@ const Team = () => {
       toast({
         title: "Error",
         description: error.message || "Failed to update role",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDepartmentChange = async (userId: string, newDept: string) => {
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ department_type: newDept as any })
+        .eq("id", userId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Department updated successfully",
+      });
+      
+      fetchTeamMembers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update department",
         variant: "destructive",
       });
     }
@@ -227,8 +261,22 @@ const Team = () => {
                             <TableCell className="text-muted-foreground">
                               {member.email}
                             </TableCell>
-                            <TableCell className="text-muted-foreground">
-                              {member.department || "-"}
+                            <TableCell>
+                              <Select
+                                value={member.department_type || ""}
+                                onValueChange={(value) => handleDepartmentChange(member.id, value)}
+                              >
+                                <SelectTrigger className="w-[140px] bg-cyber-gray border-cyber-blue/30 font-share-tech">
+                                  <SelectValue placeholder="Select..." />
+                                </SelectTrigger>
+                                <SelectContent className="bg-cyber-gray border-cyber-blue/30">
+                                  {DEPARTMENTS.map((dept) => (
+                                    <SelectItem key={dept.value} value={dept.value} className="font-share-tech">
+                                      {dept.label.toUpperCase()}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                             </TableCell>
                             <TableCell>
                               <Badge variant={roleBadge.variant} className="font-share-tech">

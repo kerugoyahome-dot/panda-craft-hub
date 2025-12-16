@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
 import RecentProjects from "@/components/RecentProjects";
+import { OnlineTeamWidget } from "@/components/OnlineTeamWidget";
 import { Users, FolderKanban, Palette, TrendingUp } from "lucide-react";
 import { CreateProjectDialog } from "@/components/CreateProjectDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
@@ -102,10 +103,10 @@ const Index = () => {
               <span className="text-cyber-green font-share-tech text-sm tracking-wider">▸ SYSTEM STATUS: OPERATIONAL</span>
             </div>
             <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-cyber-blue-glow via-white to-cyber-green-glow bg-clip-text text-transparent font-orbitron">
-              PANDATECH OPERATIONS
+              JL SOFTWARE & DIGITAL
             </h1>
             <p className="text-cyber-blue font-share-tech text-lg">
-              CIA-GRADE CONTROL TERMINAL // SECURE ACCESS GRANTED
+              ENTERPRISE CONTROL TERMINAL // SECURE ACCESS GRANTED
             </p>
           </div>
 
@@ -183,6 +184,9 @@ const Index = () => {
                   </button>
                 </div>
               </div>
+
+              {/* Online Team Widget */}
+              <OnlineTeamWidget />
 
               <div className="p-6 rounded-xl bg-gradient-cyber border-2 border-cyber-green/30 relative overflow-hidden">
                 {/* Scan line effect */}

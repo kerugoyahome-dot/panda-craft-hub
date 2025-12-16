@@ -103,7 +103,7 @@ const Auth = () => {
           </div>
           
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[hsl(200,100%,60%)] to-[hsl(150,70%,60%)] bg-clip-text text-transparent">
-            Welcome to PandaTech
+            JL Software & Digital
           </h1>
           <p className="text-[hsl(200,100%,50%)] font-mono text-sm tracking-wider">
             ▸ SECURE ACCESS TERMINAL ◂
@@ -144,7 +144,7 @@ const Auth = () => {
                     id="signin-email"
                     name="email"
                     type="email"
-                    placeholder="agent@pandatech.secure"
+                    placeholder="user@jlsoftware.com"
                     required
                     className="bg-[hsl(0,0%,8%)] border-[hsl(200,100%,50%,0.5)] text-white focus-visible:ring-[hsl(200,100%,50%)] focus-visible:shadow-[0_0_15px_rgba(0,191,255,0.5)] font-mono placeholder:text-[hsl(0,0%,40%)]"
                   />
@@ -195,7 +195,7 @@ const Auth = () => {
                     id="signup-email"
                     name="email"
                     type="email"
-                    placeholder="agent@pandatech.secure"
+                    placeholder="user@jlsoftware.com"
                     required
                     className="bg-[hsl(0,0%,8%)] border-[hsl(200,100%,50%,0.5)] text-white focus-visible:ring-[hsl(200,100%,50%)] focus-visible:shadow-[0_0_15px_rgba(0,191,255,0.5)] font-mono placeholder:text-[hsl(0,0%,40%)]"
                   />
