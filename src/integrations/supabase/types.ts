@@ -345,12 +345,64 @@ export type Database = {
         }
         Relationships: []
       }
+      project_proposals: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          client_name: string | null
+          created_at: string
+          department_type: Database["public"]["Enums"]["department_type"]
+          description: string | null
+          estimated_budget: number | null
+          estimated_hours: number | null
+          id: string
+          proposed_by: string
+          rejection_reason: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          client_name?: string | null
+          created_at?: string
+          department_type: Database["public"]["Enums"]["department_type"]
+          description?: string | null
+          estimated_budget?: number | null
+          estimated_hours?: number | null
+          id?: string
+          proposed_by: string
+          rejection_reason?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          client_name?: string | null
+          created_at?: string
+          department_type?: Database["public"]["Enums"]["department_type"]
+          description?: string | null
+          estimated_budget?: number | null
+          estimated_hours?: number | null
+          id?: string
+          proposed_by?: string
+          rejection_reason?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           assigned_team_id: string | null
           client_id: string | null
           created_at: string
           created_by: string
+          department: Database["public"]["Enums"]["department_type"] | null
           description: string | null
           end_date: string | null
           id: string
@@ -368,6 +420,7 @@ export type Database = {
           client_id?: string | null
           created_at?: string
           created_by: string
+          department?: Database["public"]["Enums"]["department_type"] | null
           description?: string | null
           end_date?: string | null
           id?: string
@@ -385,6 +438,7 @@ export type Database = {
           client_id?: string | null
           created_at?: string
           created_by?: string
+          department?: Database["public"]["Enums"]["department_type"] | null
           description?: string | null
           end_date?: string | null
           id?: string

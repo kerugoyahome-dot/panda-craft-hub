@@ -18,6 +18,8 @@ import Designs from "./pages/Designs";
 import DevHub from "./pages/DevHub";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
+import Departments from "./pages/Departments";
+import DepartmentDashboard from "./pages/DepartmentDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -124,6 +126,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Settings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/departments"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Departments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/departments/:department"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <DepartmentDashboard />
                 </ProtectedRoute>
               }
             />

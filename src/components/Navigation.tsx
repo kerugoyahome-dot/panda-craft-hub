@@ -1,10 +1,12 @@
-import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChart3, Settings, UserCog } from "lucide-react";
+import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChart3, Settings, UserCog, Building2 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAdmin } = useAuth();
 
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -15,6 +17,7 @@ const Navigation = () => {
     { icon: FileText, label: "Documents", path: "/documents" },
     { icon: Code2, label: "Dev Hub", path: "/dev-hub" },
     { icon: BarChart3, label: "Analytics", path: "/analytics" },
+    ...(isAdmin ? [{ icon: Building2, label: "Departments", path: "/departments" }] : []),
     { icon: Settings, label: "Settings", path: "/settings" },
   ];
 

@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
+import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
+import { ProposalCreator } from "@/components/ProposalCreator";
 
 interface Project {
   id: string;
@@ -123,13 +124,16 @@ const TeamDashboard = () => {
 
       <main className="pt-24 px-8 pb-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold font-orbitron text-cyber-blue-glow mb-2">
-            ASSIGNED PROJECTS
-          </h2>
-          <p className="text-muted-foreground font-share-tech">
-            Track your team's assigned work and deliverables
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold font-orbitron text-cyber-blue-glow mb-2">
+              ASSIGNED PROJECTS
+            </h2>
+            <p className="text-muted-foreground font-share-tech">
+              Track your team's assigned work and deliverables
+            </p>
+          </div>
+          <ProposalCreator />
         </div>
 
         {/* Projects Section */}

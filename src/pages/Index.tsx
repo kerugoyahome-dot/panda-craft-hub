@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import StatCard from "@/components/StatCard";
 import RecentProjects from "@/components/RecentProjects";
 import { OnlineTeamWidget } from "@/components/OnlineTeamWidget";
+import { ProposalApproval } from "@/components/ProposalApproval";
 import { Users, FolderKanban, Palette, TrendingUp } from "lucide-react";
 import { CreateProjectDialog } from "@/components/CreateProjectDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
@@ -140,6 +141,11 @@ const Index = () => {
               icon={TrendingUp}
               trend="up"
             />
+          </div>
+
+          {/* Proposal Approval Section */}
+          <div className="mb-8">
+            <ProposalApproval />
           </div>
 
           {/* Recent Projects */}
