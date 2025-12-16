@@ -316,6 +316,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           department: string | null
+          department_type: Database["public"]["Enums"]["department_type"] | null
           full_name: string | null
           id: string
           updated_at: string
@@ -324,6 +325,9 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           department?: string | null
+          department_type?:
+            | Database["public"]["Enums"]["department_type"]
+            | null
           full_name?: string | null
           id: string
           updated_at?: string
@@ -332,6 +336,9 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           department?: string | null
+          department_type?:
+            | Database["public"]["Enums"]["department_type"]
+            | null
           full_name?: string | null
           id?: string
           updated_at?: string
@@ -543,6 +550,13 @@ export type Database = {
         | "writer"
         | "client"
         | "team"
+      department_type:
+        | "financial"
+        | "graphic_design"
+        | "developers"
+        | "advertising"
+        | "compliance"
+        | "management"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -671,6 +685,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "developer", "designer", "writer", "client", "team"],
+      department_type: [
+        "financial",
+        "graphic_design",
+        "developers",
+        "advertising",
+        "compliance",
+        "management",
+      ],
     },
   },
 } as const
