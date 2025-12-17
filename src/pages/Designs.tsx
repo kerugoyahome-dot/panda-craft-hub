@@ -258,7 +258,7 @@ const Designs = () => {
     <div className="min-h-screen bg-black">
       <Navigation />
       <Header />
-      <div className="ml-20 pt-16 p-8">
+      <main className="ml-20 pt-16 p-8">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">DESIGN GALLERY</h1>
@@ -364,59 +364,58 @@ const Designs = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {designs.map((design) => (
-          <Card key={design.id} className="overflow-hidden">
-            <div className="relative aspect-video">
-              <img
-                src={getImageUrl(design.file_path)}
-                alt={design.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <CardHeader>
-              <CardTitle className="text-lg">{design.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {design.description && (
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {design.description}
-                </p>
-              )}
-              {getProjectName(design.project_id) && (
-                <Badge variant="outline">{getProjectName(design.project_id)}</Badge>
-              )}
-              {design.tags && design.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {design.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="flex gap-2 justify-end">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleEdit(design)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleDelete(design.id, design.file_path)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {designs.map((design) => (
+            <Card key={design.id} className="overflow-hidden">
+              <div className="relative aspect-video">
+                <img
+                  src={getImageUrl(design.file_path)}
+                  alt={design.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <CardHeader>
+                <CardTitle className="text-lg">{design.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {design.description && (
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {design.description}
+                  </p>
+                )}
+                {getProjectName(design.project_id) && (
+                  <Badge variant="outline">{getProjectName(design.project_id)}</Badge>
+                )}
+                {design.tags && design.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {design.tags.map((tag, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="flex gap-2 justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleEdit(design)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDelete(design.id, design.file_path)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </main>
     </div>
   );
 };

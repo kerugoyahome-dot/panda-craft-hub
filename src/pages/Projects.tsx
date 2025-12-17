@@ -10,11 +10,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Pencil, Trash2, KanbanSquare, Home } from "lucide-react";
+import { Plus, Pencil, Trash2, KanbanSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import Navigation from "@/components/Navigation";
 import Header from "@/components/Header";
+import { AssignTeamDialog } from "@/components/AssignTeamDialog";
 
 interface Project {
   id: string;
@@ -226,7 +227,7 @@ const Projects = () => {
     <div className="min-h-screen bg-black">
       <Navigation />
       <Header />
-      <div className="ml-20 pt-16 p-8">
+      <main className="ml-20 pt-16 p-8">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-3xl font-bold text-cyber-blue-glow font-orbitron">PROJECTS</h1>
@@ -332,61 +333,65 @@ const Projects = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <Card key={project.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{project.name}</CardTitle>
-                <Badge variant={getStatusColor(project.status)}>
-                  {project.status.replace("_", " ")}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                {project.description || "No description"}
-              </p>
-              <div className="text-sm">
-                <span className="font-medium">Client:</span> {getClientName(project.client_id)}
-              </div>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Progress</span>
-                  <span>{project.progress}%</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <Card key={project.id}>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <CardTitle className="text-lg">{project.name}</CardTitle>
+                  <Badge variant={getStatusColor(project.status)}>
+                    {project.status.replace("_", " ")}
+                  </Badge>
                 </div>
-                <Progress value={project.progress} />
-              </div>
-              <div className="flex gap-2 justify-end">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate(`/kanban/${project.id}`)}
-                >
-                  <KanbanSquare className="h-4 w-4 mr-1" />
-                  Board
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleEdit(project)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(project.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {project.description || "No description"}
+                </p>
+                <div className="text-sm">
+                  <span className="font-medium">Client:</span> {getClientName(project.client_id)}
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Progress</span>
+                    <span>{project.progress}%</span>
+                  </div>
+                  <Progress value={project.progress} />
+                </div>
+                <div className="flex gap-2 justify-end flex-wrap">
+                  <AssignTeamDialog
+                    projectId={project.id}
+                    projectName={project.name}
+                    onAssigned={fetchProjects}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate(`/kanban/${project.id}`)}
+                  >
+                    <KanbanSquare className="h-4 w-4 mr-1" />
+                    Board
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEdit(project)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(project.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
     </div>
   );
 };

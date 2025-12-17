@@ -5,10 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github, FileText } from "lucide-react";
+import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 import { ProposalCreator } from "@/components/ProposalCreator";
+import { DepartmentChat } from "@/components/DepartmentChat";
+import jlLogo from "@/assets/jl-logo.png";
+import { Database } from "@/integrations/supabase/types";
+
+type DepartmentType = Database["public"]["Enums"]["department_type"];
 
 interface Project {
   id: string;
@@ -27,12 +32,26 @@ interface Project {
 const TeamDashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userDepartment, setUserDepartment] = useState<DepartmentType | null>(null);
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchTeamProjects();
+    fetchUserDepartment();
   }, [user]);
+
+  const fetchUserDepartment = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("department_type")
+      .eq("id", user.id)
+      .single();
+    if (data?.department_type) {
+      setUserDepartment(data.department_type as DepartmentType);
+    }
+  };
 
   const fetchTeamProjects = async () => {
     if (!user) return;
@@ -95,8 +114,8 @@ const TeamDashboard = () => {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-xl border-b-2 border-cyber-blue/30 flex items-center justify-between px-8 z-10 shadow-[0_0_20px_rgba(0,191,255,0.2)]">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-cyber-blue/20 to-cyber-green/20 rounded-lg flex items-center justify-center font-bold text-xl border-2 border-cyber-blue shadow-[0_0_15px_rgba(0,191,255,0.3)]">
-            🐼
+          <div className="w-12 h-12 rounded-lg flex items-center justify-center border-2 border-cyber-blue shadow-[0_0_15px_rgba(0,191,255,0.3)] overflow-hidden bg-white/10">
+            <img src={jlLogo} alt="JL Software" className="w-full h-full object-contain" />
           </div>
           <div>
             <h1 className="text-lg font-bold font-orbitron text-cyber-blue-glow">
@@ -250,6 +269,11 @@ const TeamDashboard = () => {
               })}
             </div>
           )}
+        </div>
+
+        {/* Department Chat */}
+        <div className="mt-8">
+          <DepartmentChat userDepartment={userDepartment} />
         </div>
       </main>
     </div>
