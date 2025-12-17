@@ -56,6 +56,39 @@ export type Database = {
         }
         Relationships: []
       }
+      department_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          recipient_department: Database["public"]["Enums"]["department_type"]
+          sender_department: Database["public"]["Enums"]["department_type"]
+          sender_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          recipient_department: Database["public"]["Enums"]["department_type"]
+          sender_department: Database["public"]["Enums"]["department_type"]
+          sender_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          recipient_department?: Database["public"]["Enums"]["department_type"]
+          sender_department?: Database["public"]["Enums"]["department_type"]
+          sender_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       designs: {
         Row: {
           created_at: string
@@ -501,6 +534,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_activity: {
+        Row: {
+          activity_type: string
+          created_at: string
+          description: string
+          id: string
+          project_id: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          description: string
+          id?: string
+          project_id?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          description?: string
+          id?: string
+          project_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_activity_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"

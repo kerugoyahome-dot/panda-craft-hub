@@ -5,6 +5,7 @@ import StatCard from "@/components/StatCard";
 import RecentProjects from "@/components/RecentProjects";
 import { OnlineTeamWidget } from "@/components/OnlineTeamWidget";
 import { ProposalApproval } from "@/components/ProposalApproval";
+import { TeamActivityFeed } from "@/components/TeamActivityFeed";
 import { Users, FolderKanban, Palette, TrendingUp } from "lucide-react";
 import { CreateProjectDialog } from "@/components/CreateProjectDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
@@ -194,44 +195,8 @@ const Index = () => {
               {/* Online Team Widget */}
               <OnlineTeamWidget />
 
-              <div className="p-6 rounded-xl bg-gradient-cyber border-2 border-cyber-green/30 relative overflow-hidden">
-                {/* Scan line effect */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyber-green/5 to-transparent animate-pulse" />
-                
-                <h3 className="text-lg font-bold mb-4 font-orbitron text-cyber-green">TEAM ACTIVITY</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-3 relative z-10">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyber-blue/30 to-cyber-green/30 flex items-center justify-center text-xs font-bold border border-cyber-blue text-cyber-blue">
-                      JD
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium font-share-tech text-white">John Doe</p>
-                      <p className="text-muted-foreground text-xs">Updated design files</p>
-                    </div>
-                    <span className="text-xs text-cyber-green font-share-tech">2m ago</span>
-                  </div>
-                  <div className="flex items-center gap-3 relative z-10">
-                    <div className="w-8 h-8 rounded-full bg-cyber-gray flex items-center justify-center text-xs font-bold border border-cyber-green text-cyber-green">
-                      SM
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium font-share-tech text-white">Sarah Miller</p>
-                      <p className="text-muted-foreground text-xs">Committed to GitHub</p>
-                    </div>
-                    <span className="text-xs text-cyber-green font-share-tech">15m ago</span>
-                  </div>
-                  <div className="flex items-center gap-3 relative z-10">
-                    <div className="w-8 h-8 rounded-full bg-cyber-gray flex items-center justify-center text-xs font-bold border border-cyber-blue text-cyber-blue">
-                      RK
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-medium font-share-tech text-white">Robert Kim</p>
-                      <p className="text-muted-foreground text-xs">Created new proposal</p>
-                    </div>
-                    <span className="text-xs text-cyber-green font-share-tech">1h ago</span>
-                  </div>
-                </div>
-              </div>
+              {/* Real Team Activity Feed */}
+              <TeamActivityFeed />
             </div>
           </div>
           </div>

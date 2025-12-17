@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import jlLogo from "@/assets/jl-logo.png";
 
 const Auth = () => {
   const { signIn, signUp, user, loading } = useAuth();
@@ -89,16 +90,16 @@ const Auth = () => {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        {/* Header with holographic panda logo */}
+        {/* Header with logo */}
         <div className="text-center mb-8 animate-fade-in">
-          <div className="relative w-24 h-24 mx-auto mb-6">
+          <div className="relative w-32 h-32 mx-auto mb-6">
             {/* Holographic glow rings */}
             <div className="absolute inset-0 rounded-full bg-[hsl(200,100%,50%)] opacity-20 blur-xl animate-pulse" />
             <div className="absolute inset-2 rounded-full bg-[hsl(150,70%,50%)] opacity-10 blur-lg animate-pulse" style={{ animationDelay: '0.5s' }} />
             
-            {/* Panda logo with cyber effect */}
-            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[hsl(200,100%,50%,0.2)] to-[hsl(150,70%,50%,0.2)] border-2 border-[hsl(200,100%,50%)] flex items-center justify-center font-bold text-5xl backdrop-blur-sm shadow-[0_0_30px_rgba(0,191,255,0.5)]">
-              🐼
+            {/* Logo with cyber effect */}
+            <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[hsl(200,100%,50%,0.2)] to-[hsl(150,70%,50%,0.2)] border-2 border-[hsl(200,100%,50%)] flex items-center justify-center backdrop-blur-sm shadow-[0_0_30px_rgba(0,191,255,0.5)] overflow-hidden">
+              <img src={jlLogo} alt="JL Software" className="w-full h-full object-contain p-2" />
             </div>
           </div>
           

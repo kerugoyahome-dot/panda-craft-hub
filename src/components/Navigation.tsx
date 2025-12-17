@@ -2,6 +2,7 @@ import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChar
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import jlLogo from "@/assets/jl-logo.png";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -22,12 +23,12 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed left-0 top-0 h-screen w-20 bg-black border-r-2 border-cyber-blue/30 flex flex-col items-center py-6 gap-4 shadow-[0_0_30px_rgba(0,191,255,0.2)]">
-      <div className="mb-8 relative group">
+    <nav className="fixed left-0 top-0 h-screen w-20 bg-black border-r-2 border-cyber-blue/30 flex flex-col items-center py-6 gap-4 shadow-[0_0_30px_rgba(0,191,255,0.2)] z-20">
+      <div className="mb-8 relative group cursor-pointer" onClick={() => navigate("/")}>
         {/* Holographic glow for logo */}
         <div className="absolute inset-0 rounded-xl bg-cyber-blue opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
-        <div className="relative w-12 h-12 bg-gradient-to-br from-cyber-blue/20 to-cyber-green/20 rounded-xl flex items-center justify-center font-bold text-2xl border-2 border-cyber-blue shadow-[0_0_20px_rgba(0,191,255,0.4)]">
-          🐼
+        <div className="relative w-14 h-14 rounded-xl flex items-center justify-center border-2 border-cyber-blue shadow-[0_0_20px_rgba(0,191,255,0.4)] overflow-hidden bg-white/10">
+          <img src={jlLogo} alt="JL Software" className="w-full h-full object-contain" />
         </div>
       </div>
       
