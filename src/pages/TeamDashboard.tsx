@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github } from "lucide-react";
+import { FolderKanban, Calendar, Clock, LogOut, ExternalLink, Github, Upload, Timer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 import { ProposalCreator } from "@/components/ProposalCreator";
-import { DepartmentChat } from "@/components/DepartmentChat";
+import { FloatingChat } from "@/components/FloatingChat";
+import { ProjectSubmissionDialog } from "@/components/ProjectSubmissionDialog";
 import jlLogo from "@/assets/jl-logo.png";
 import { Database } from "@/integrations/supabase/types";
 
@@ -27,12 +28,16 @@ interface Project {
   live_url: string | null;
   repository_url: string | null;
   created_at: string;
+  deadline_hours: number | null;
+  submitted_at: string | null;
 }
 
 const TeamDashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [userDepartment, setUserDepartment] = useState<DepartmentType | null>(null);
+  const [submissionDialogOpen, setSubmissionDialogOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -242,6 +247,15 @@ const TeamDashboard = () => {
                         <Progress value={project.progress} className="h-2" />
                       </div>
 
+                      {project.deadline_hours && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Timer className="h-4 w-4 text-yellow-400" />
+                          <span className="text-muted-foreground font-share-tech">
+                            Deadline: {project.deadline_hours}h
+                          </span>
+                        </div>
+                      )}
+
                       {remainingDays !== null && (
                         <div className="flex items-center gap-2 text-sm">
                           <Clock className="h-4 w-4 text-cyber-green" />
@@ -263,6 +277,24 @@ const TeamDashboard = () => {
                           </span>
                         </div>
                       )}
+
+                      {project.submitted_at ? (
+                        <Badge className="bg-cyber-green/20 text-cyber-green border-cyber-green/50">
+                          ✓ Submitted {new Date(project.submitted_at).toLocaleDateString()}
+                        </Badge>
+                      ) : (
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setSubmissionDialogOpen(true);
+                          }}
+                          className="w-full bg-cyber-green/20 border border-cyber-green text-cyber-green hover:bg-cyber-green/30 font-share-tech"
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          SUBMIT WORK
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 );
@@ -271,10 +303,16 @@ const TeamDashboard = () => {
           )}
         </div>
 
-        {/* Department Chat */}
-        <div className="mt-8">
-          <DepartmentChat userDepartment={userDepartment} />
-        </div>
+
+        {selectedProject && (
+          <ProjectSubmissionDialog
+            open={submissionDialogOpen}
+            onOpenChange={setSubmissionDialogOpen}
+            project={selectedProject}
+            onSuccess={fetchTeamProjects}
+          />
+        )}
+        <FloatingChat />
       </main>
     </div>
   );

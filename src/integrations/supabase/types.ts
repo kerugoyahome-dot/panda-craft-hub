@@ -192,6 +192,56 @@ export type Database = {
           },
         ]
       }
+      financial_transactions: {
+        Row: {
+          amount: number
+          category: string
+          client_name: string | null
+          created_at: string
+          description: string | null
+          id: string
+          project_id: string | null
+          recorded_by: string
+          transaction_date: string
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          project_id?: string | null
+          recorded_by: string
+          transaction_date?: string
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          project_id?: string | null
+          recorded_by?: string
+          transaction_date?: string
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       github_commits: {
         Row: {
           author_email: string | null
@@ -429,12 +479,57 @@ export type Database = {
         }
         Relationships: []
       }
+      project_submissions: {
+        Row: {
+          created_at: string
+          file_name: string | null
+          file_path: string | null
+          file_size: number | null
+          id: string
+          notes: string | null
+          project_id: string
+          submission_type: string
+          submitted_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          notes?: string | null
+          project_id: string
+          submission_type: string
+          submitted_by: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          notes?: string | null
+          project_id?: string
+          submission_type?: string
+          submitted_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_submissions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           assigned_team_id: string | null
           client_id: string | null
           created_at: string
           created_by: string
+          deadline_hours: number | null
           department: Database["public"]["Enums"]["department_type"] | null
           description: string | null
           end_date: string | null
@@ -446,6 +541,8 @@ export type Database = {
           repository_url: string | null
           start_date: string | null
           status: string
+          submission_notes: string | null
+          submitted_at: string | null
           updated_at: string
         }
         Insert: {
@@ -453,6 +550,7 @@ export type Database = {
           client_id?: string | null
           created_at?: string
           created_by: string
+          deadline_hours?: number | null
           department?: Database["public"]["Enums"]["department_type"] | null
           description?: string | null
           end_date?: string | null
@@ -464,6 +562,8 @@ export type Database = {
           repository_url?: string | null
           start_date?: string | null
           status?: string
+          submission_notes?: string | null
+          submitted_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -471,6 +571,7 @@ export type Database = {
           client_id?: string | null
           created_at?: string
           created_by?: string
+          deadline_hours?: number | null
           department?: Database["public"]["Enums"]["department_type"] | null
           description?: string | null
           end_date?: string | null
@@ -482,6 +583,8 @@ export type Database = {
           repository_url?: string | null
           start_date?: string | null
           status?: string
+          submission_notes?: string | null
+          submitted_at?: string | null
           updated_at?: string
         }
         Relationships: [
