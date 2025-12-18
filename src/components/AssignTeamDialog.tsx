@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Clock } from "lucide-react";
 
 interface TeamMember {
   id: string;
@@ -29,6 +30,7 @@ export const AssignTeamDialog = ({
   const [open, setOpen] = useState(false);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [selectedMember, setSelectedMember] = useState<string>(currentAssignee || "");
+  const [deadlineHours, setDeadlineHours] = useState<number[]>([8]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -70,7 +72,11 @@ export const AssignTeamDialog = ({
     try {
       const { error } = await supabase
         .from("projects")
-        .update({ assigned_team_id: selectedMember })
+        .update({ 
+          assigned_team_id: selectedMember,
+          deadline_hours: deadlineHours[0],
+          status: "in-progress",
+        })
         .eq("id", projectId);
 
       if (error) throw error;
@@ -86,14 +92,14 @@ export const AssignTeamDialog = ({
         {
           user_id: selectedMember,
           activity_type: "project",
-          description: `Assigned to project: ${projectName}`,
+          description: `Assigned to project: ${projectName} (${deadlineHours[0]}h deadline)`,
           project_id: projectId,
         },
       ]);
 
       toast({
         title: "Success",
-        description: `Project assigned to ${profile?.full_name || "team member"}`,
+        description: `Project assigned to ${profile?.full_name || "team member"} with ${deadlineHours[0]}h deadline`,
       });
 
       setOpen(false);
@@ -120,6 +126,13 @@ export const AssignTeamDialog = ({
       management: "Management",
     };
     return dept ? labels[dept] || dept : "No Department";
+  };
+
+  const getDeadlineLabel = (hours: number) => {
+    if (hours < 24) {
+      return `${hours} hour${hours > 1 ? "s" : ""}`;
+    }
+    return `${hours} hours (1 day)`;
   };
 
   return (
@@ -161,6 +174,33 @@ export const AssignTeamDialog = ({
               </SelectContent>
             </Select>
           </div>
+
+          {/* Deadline Selector */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-cyber-green font-share-tech flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                DEADLINE
+              </Label>
+              <span className="text-cyber-green font-orbitron text-lg">
+                {getDeadlineLabel(deadlineHours[0])}
+              </span>
+            </div>
+            <Slider
+              value={deadlineHours}
+              onValueChange={setDeadlineHours}
+              min={2}
+              max={24}
+              step={1}
+              className="w-full"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground font-share-tech">
+              <span>2h (urgent)</span>
+              <span>12h (standard)</span>
+              <span>24h (extended)</span>
+            </div>
+          </div>
+
           <div className="flex gap-2 justify-end">
             <Button variant="outline" onClick={() => setOpen(false)}>
               Cancel
