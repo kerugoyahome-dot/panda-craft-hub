@@ -6,6 +6,7 @@ import RecentProjects from "@/components/RecentProjects";
 import { OnlineTeamWidget } from "@/components/OnlineTeamWidget";
 import { ProposalApproval } from "@/components/ProposalApproval";
 import { TeamActivityFeed } from "@/components/TeamActivityFeed";
+import { FloatingChat } from "@/components/FloatingChat";
 import { Users, FolderKanban, Palette, TrendingUp } from "lucide-react";
 import { CreateProjectDialog } from "@/components/CreateProjectDialog";
 import { AddClientDialog } from "@/components/AddClientDialog";
@@ -201,6 +202,7 @@ const Index = () => {
           </div>
           </div>
         </main>
+        <FloatingChat />
       </div>
     </>
   );

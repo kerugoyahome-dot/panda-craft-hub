@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FolderKanban, Clock, CheckCircle, AlertCircle, ArrowLeft, Users } from "lucide-react";
 import { ProposalCreator } from "@/components/ProposalCreator";
+import { FloatingChat } from "@/components/FloatingChat";
+import { FinancialTransactions } from "@/components/FinancialTransactions";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -237,8 +239,16 @@ const DepartmentDashboard = () => {
               </div>
             </div>
           </div>
+
+          {/* Financial Transactions for Financial Department */}
+          {currentDepartment === "financial" && (
+            <div className="mt-8">
+              <FinancialTransactions />
+            </div>
+          )}
         </div>
       </main>
+      <FloatingChat />
     </div>
   );
 };
