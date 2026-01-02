@@ -17,7 +17,9 @@ import {
   Users, 
   TrendingUp,
   Target,
-  Briefcase
+  Briefcase,
+  Upload,
+  Image as ImageIcon
 } from "lucide-react";
 import { ProposalCreator } from "@/components/ProposalCreator";
 import { FloatingChat } from "@/components/FloatingChat";
@@ -27,6 +29,9 @@ import { DepartmentActivity } from "@/components/DepartmentActivity";
 import { DepartmentDocuments } from "@/components/DepartmentDocuments";
 import { PresenceIndicator } from "@/components/PresenceIndicator";
 import { usePresence } from "@/hooks/usePresence";
+import { UploadDesignDialog } from "@/components/UploadDesignDialog";
+import { DesignGallery } from "@/components/DesignGallery";
+import { DevHubSection } from "@/components/DevHubSection";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -58,6 +63,7 @@ const DepartmentDashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [uploadDesignOpen, setUploadDesignOpen] = useState(false);
 
   const currentDepartment = department as DepartmentType;
 
@@ -200,7 +206,18 @@ const DepartmentDashboard = () => {
                   {departmentDescriptions[currentDepartment]}
                 </p>
               </div>
-              <ProposalCreator onSuccess={fetchDepartmentData} />
+              <div className="flex gap-2">
+                {currentDepartment === "graphic_design" && (
+                  <Button
+                    onClick={() => setUploadDesignOpen(true)}
+                    className="bg-cyber-green/20 border-2 border-cyber-green text-cyber-green hover:bg-cyber-green/30 font-share-tech"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    UPLOAD DESIGN
+                  </Button>
+                )}
+                <ProposalCreator onSuccess={fetchDepartmentData} />
+              </div>
             </div>
           </div>
 
@@ -416,9 +433,29 @@ const DepartmentDashboard = () => {
               <FinancialTransactions />
             </div>
           )}
+
+          {/* Design Gallery for Graphic Design Department */}
+          {currentDepartment === "graphic_design" && (
+            <div className="mb-8">
+              <DesignGallery />
+            </div>
+          )}
+
+          {/* DevHub for Developers Department */}
+          {currentDepartment === "developers" && (
+            <div className="mb-8">
+              <DevHubSection />
+            </div>
+          )}
         </div>
       </main>
       <FloatingChat />
+      
+      {/* Upload Design Dialog */}
+      <UploadDesignDialog
+        open={uploadDesignOpen}
+        onOpenChange={setUploadDesignOpen}
+      />
     </div>
   );
 };
