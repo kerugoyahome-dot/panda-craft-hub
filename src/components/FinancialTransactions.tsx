@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { DollarSign, Plus, TrendingUp, FileText } from "lucide-react";
+import { DollarSign, Plus, TrendingUp, FileText, Pencil, Trash2 } from "lucide-react";
 
 interface Transaction {
   id: string;
@@ -37,6 +37,7 @@ export const FinancialTransactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [formData, setFormData] = useState({
     transaction_type: "payment",
     category: "software_development",
@@ -90,32 +91,45 @@ export const FinancialTransactions = () => {
     if (!user || !formData.amount) return;
 
     try {
-      const { error } = await supabase.from("financial_transactions").insert([
-        {
-          transaction_type: formData.transaction_type,
-          category: formData.category,
-          amount: parseFloat(formData.amount),
-          description: formData.description || null,
-          client_name: formData.client_name || null,
-          recorded_by: user.id,
-        },
-      ]);
+      if (editingTransaction) {
+        const { error } = await supabase
+          .from("financial_transactions")
+          .update({
+            transaction_type: formData.transaction_type,
+            category: formData.category,
+            amount: parseFloat(formData.amount),
+            description: formData.description || null,
+            client_name: formData.client_name || null,
+          })
+          .eq("id", editingTransaction.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "Success",
-        description: "Transaction recorded successfully",
-      });
+        toast({
+          title: "Success",
+          description: "Transaction updated successfully",
+        });
+      } else {
+        const { error } = await supabase.from("financial_transactions").insert([
+          {
+            transaction_type: formData.transaction_type,
+            category: formData.category,
+            amount: parseFloat(formData.amount),
+            description: formData.description || null,
+            client_name: formData.client_name || null,
+            recorded_by: user.id,
+          },
+        ]);
 
-      setFormData({
-        transaction_type: "payment",
-        category: "software_development",
-        amount: "",
-        description: "",
-        client_name: "",
-      });
-      setDialogOpen(false);
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Transaction recorded successfully",
+        });
+      }
+
+      resetForm();
     } catch (error: any) {
       toast({
         title: "Error",
@@ -123,6 +137,63 @@ export const FinancialTransactions = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleEdit = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setFormData({
+      transaction_type: transaction.transaction_type,
+      category: transaction.category,
+      amount: String(transaction.amount),
+      description: transaction.description || "",
+      client_name: transaction.client_name || "",
+    });
+    setDialogOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this transaction?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("financial_transactions")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Transaction deleted successfully",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      transaction_type: "payment",
+      category: "software_development",
+      amount: "",
+      description: "",
+      client_name: "",
+    });
+    setEditingTransaction(null);
+    setDialogOpen(false);
+  };
+
+  const formatKSH = (amount: number) => {
+    return new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   };
 
   const totalRevenue = transactions.reduce((sum, t) => sum + Number(t.amount), 0);
@@ -144,7 +215,7 @@ export const FinancialTransactions = () => {
               <div>
                 <p className="text-xs text-muted-foreground font-share-tech">TOTAL REVENUE</p>
                 <p className="text-2xl font-bold text-cyber-green font-orbitron">
-                  ${totalRevenue.toLocaleString()}
+                  {formatKSH(totalRevenue)}
                 </p>
               </div>
             </div>
@@ -185,7 +256,10 @@ export const FinancialTransactions = () => {
       </div>
 
       {/* Add Transaction Button */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => {
+        if (!open) resetForm();
+        setDialogOpen(open);
+      }}>
         <DialogTrigger asChild>
           <Button className="bg-cyber-green/20 border-2 border-cyber-green text-cyber-green hover:bg-cyber-green/30 font-share-tech">
             <Plus className="h-4 w-4 mr-2" />
@@ -195,7 +269,7 @@ export const FinancialTransactions = () => {
         <DialogContent className="bg-cyber-gray border-2 border-cyber-green/30 text-white">
           <DialogHeader>
             <DialogTitle className="text-cyber-green font-orbitron">
-              RECORD TRANSACTION
+              {editingTransaction ? "EDIT TRANSACTION" : "RECORD TRANSACTION"}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -240,7 +314,7 @@ export const FinancialTransactions = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-cyber-green font-share-tech">AMOUNT ($)</Label>
+              <Label className="text-cyber-green font-share-tech">AMOUNT (KSH)</Label>
               <Input
                 type="number"
                 step="0.01"
@@ -272,7 +346,7 @@ export const FinancialTransactions = () => {
               type="submit"
               className="w-full bg-cyber-green/20 border-2 border-cyber-green text-cyber-green hover:bg-cyber-green/30 font-share-tech"
             >
-              RECORD TRANSACTION
+              {editingTransaction ? "UPDATE TRANSACTION" : "RECORD TRANSACTION"}
             </Button>
           </form>
         </DialogContent>
@@ -300,7 +374,7 @@ export const FinancialTransactions = () => {
                   className="p-4 rounded-lg bg-black/30 border border-cyber-blue/20 hover:border-cyber-blue/40 transition-colors"
                 >
                   <div className="flex justify-between items-start">
-                    <div>
+                    <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <Badge variant="outline" className="text-cyber-green border-cyber-green/50">
                           {categoryLabels[transaction.category]}
@@ -323,9 +397,27 @@ export const FinancialTransactions = () => {
                         {new Date(transaction.transaction_date).toLocaleDateString()}
                       </p>
                     </div>
-                    <p className="text-xl font-bold text-cyber-green font-orbitron">
-                      ${Number(transaction.amount).toLocaleString()}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xl font-bold text-cyber-green font-orbitron">
+                        {formatKSH(Number(transaction.amount))}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEdit(transaction)}
+                        className="text-cyber-blue hover:text-cyber-blue-glow"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(transaction.id)}
+                        className="text-red-400 hover:text-red-300"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}

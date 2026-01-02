@@ -266,12 +266,6 @@ const Designs = () => {
           </div>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setEditingDesign(null)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Upload Design
-            </Button>
-          </DialogTrigger>
           <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
