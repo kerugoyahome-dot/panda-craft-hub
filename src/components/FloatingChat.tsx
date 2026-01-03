@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Send, X, Users, Bell, Loader2 } from "lucide-react";
+import { MessageSquare, Send, X, Users, Bell, Loader2, Paperclip, FileText, Image as ImageIcon, Download } from "lucide-react";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -20,6 +20,9 @@ interface Message {
   read: boolean;
   created_at: string;
   sender_name?: string;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
+  attachment_type?: string | null;
 }
 
 const departmentLabels: Record<DepartmentType, string> = {
@@ -29,6 +32,7 @@ const departmentLabels: Record<DepartmentType, string> = {
   advertising: "Advertising",
   compliance: "Compliance",
   management: "Management",
+  records_management: "Records Management",
 };
 
 const departments: DepartmentType[] = [
@@ -38,6 +42,7 @@ const departments: DepartmentType[] = [
   "developers",
   "advertising",
   "compliance",
+  "records_management",
 ];
 
 export const FloatingChat = () => {
@@ -49,6 +54,9 @@ export const FloatingChat = () => {
   const [sending, setSending] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [userDepartment, setUserDepartment] = useState<DepartmentType | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -244,7 +252,7 @@ export const FloatingChat = () => {
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !user) return;
+    if ((!newMessage.trim() && !selectedFile) || !user) return;
     if (!userDepartment && !isAdmin) {
       toast({
         title: "Error",
@@ -255,14 +263,43 @@ export const FloatingChat = () => {
     }
 
     setSending(true);
+    setUploading(selectedFile !== null);
+    
     try {
       const senderDept = isAdmin ? ("management" as DepartmentType) : userDepartment!;
+      
+      let attachmentUrl: string | null = null;
+      let attachmentName: string | null = null;
+      let attachmentType: string | null = null;
+
+      // Upload file if selected
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("department-attachments")
+          .upload(fileName, selectedFile);
+        
+        if (uploadError) throw uploadError;
+        
+        const { data: urlData } = supabase.storage
+          .from("department-attachments")
+          .getPublicUrl(uploadData.path);
+        
+        attachmentUrl = urlData.publicUrl;
+        attachmentName = selectedFile.name;
+        attachmentType = selectedFile.type;
+      }
       
       const messageData = {
         sender_id: user.id,
         sender_department: senderDept,
         recipient_department: selectedDepartment,
-        message: newMessage.trim(),
+        message: newMessage.trim() || (selectedFile ? `Shared: ${selectedFile.name}` : ""),
+        attachment_url: attachmentUrl,
+        attachment_name: attachmentName,
+        attachment_type: attachmentType,
       };
 
       const { error } = await supabase.from("department_messages").insert([messageData]);
@@ -273,12 +310,16 @@ export const FloatingChat = () => {
       await supabase.from("team_activity").insert([
         {
           user_id: user.id,
-          activity_type: "message",
-          description: `Sent message to ${departmentLabels[selectedDepartment]}`,
+          activity_type: selectedFile ? "file_share" : "message",
+          description: selectedFile 
+            ? `Shared file "${selectedFile.name}" with ${departmentLabels[selectedDepartment]}`
+            : `Sent message to ${departmentLabels[selectedDepartment]}`,
         },
       ]);
 
       setNewMessage("");
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error: any) {
       console.error("Error sending message:", error);
       toast({
@@ -288,7 +329,30 @@ export const FloatingChat = () => {
       });
     } finally {
       setSending(false);
+      setUploading(false);
     }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Maximum file size is 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const getAttachmentUrl = (url: string) => url;
+
+  const isImageAttachment = (type: string | null | undefined) => {
+    return type?.startsWith("image/");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -397,7 +461,38 @@ export const FloatingChat = () => {
                           {isOwn ? "You" : msg.sender_name} •{" "}
                           {departmentLabels[msg.sender_department]}
                         </p>
-                        <p className="text-sm text-white whitespace-pre-wrap">{msg.message}</p>
+                        
+                        {/* Attachment Preview */}
+                        {msg.attachment_url && (
+                          <div className="mb-2">
+                            {isImageAttachment(msg.attachment_type) ? (
+                              <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer">
+                                <img
+                                  src={msg.attachment_url}
+                                  alt={msg.attachment_name || "Attachment"}
+                                  className="max-w-full max-h-32 rounded-lg border border-white/20 hover:border-cyber-blue transition-colors"
+                                />
+                              </a>
+                            ) : (
+                              <a
+                                href={msg.attachment_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 p-2 rounded-lg bg-black/30 border border-white/20 hover:border-cyber-blue transition-colors"
+                              >
+                                <FileText className="h-4 w-4 text-cyber-blue" />
+                                <span className="text-xs text-white truncate max-w-[150px]">
+                                  {msg.attachment_name || "Attachment"}
+                                </span>
+                                <Download className="h-3 w-3 text-muted-foreground" />
+                              </a>
+                            )}
+                          </div>
+                        )}
+                        
+                        {msg.message && !msg.message.startsWith("Shared:") && (
+                          <p className="text-sm text-white whitespace-pre-wrap">{msg.message}</p>
+                        )}
                         <p className="text-xs text-muted-foreground mt-1">
                           {new Date(msg.created_at).toLocaleString()}
                         </p>
@@ -412,7 +507,41 @@ export const FloatingChat = () => {
 
           {/* Input */}
           <div className="p-4 border-t border-cyber-blue/30 bg-black/50">
+            {/* Selected File Preview */}
+            {selectedFile && (
+              <div className="flex items-center gap-2 mb-2 p-2 bg-cyber-blue/10 rounded-lg border border-cyber-blue/30">
+                <Paperclip className="h-4 w-4 text-cyber-blue" />
+                <span className="text-xs text-white truncate flex-1">{selectedFile.name}</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                  className="h-6 w-6 p-0 text-muted-foreground hover:text-white"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
             <div className="flex gap-2">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                className="hidden"
+                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+              />
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={sending}
+                className="text-cyber-blue hover:bg-cyber-blue/20"
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
               <Input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -423,7 +552,7 @@ export const FloatingChat = () => {
               />
               <Button
                 onClick={sendMessage}
-                disabled={sending || !newMessage.trim()}
+                disabled={sending || (!newMessage.trim() && !selectedFile)}
                 size="sm"
                 className="bg-cyber-blue/20 border border-cyber-blue hover:bg-cyber-blue/30"
               >
@@ -434,6 +563,12 @@ export const FloatingChat = () => {
                 )}
               </Button>
             </div>
+            {uploading && (
+              <p className="text-xs text-cyber-blue mt-2 flex items-center gap-1">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Uploading file...
+              </p>
+            )}
           </div>
         </div>
       )}

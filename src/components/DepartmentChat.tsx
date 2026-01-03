@@ -34,6 +34,7 @@ const departmentLabels: Record<DepartmentType, string> = {
   advertising: "Advertising",
   compliance: "Compliance",
   management: "Management",
+  records_management: "Records Management",
 };
 
 export const DepartmentChat = ({ userDepartment }: DepartmentChatProps) => {

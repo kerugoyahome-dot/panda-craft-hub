@@ -9,7 +9,8 @@ import {
   Megaphone, 
   Shield, 
   Building2,
-  ArrowRight
+  ArrowRight,
+  FileArchive
 } from "lucide-react";
 
 const departments = [
@@ -66,6 +67,15 @@ const departments = [
     color: "orange-400",
     borderColor: "border-orange-500/50",
     bgColor: "bg-orange-500/10",
+  },
+  {
+    id: "records_management",
+    name: "Records Management",
+    description: "Document management, file archiving, and organizational records",
+    icon: FileArchive,
+    color: "cyan-400",
+    borderColor: "border-cyan-500/50",
+    bgColor: "bg-cyan-500/10",
   },
 ];
 

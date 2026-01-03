@@ -58,6 +58,9 @@ export type Database = {
       }
       department_messages: {
         Row: {
+          attachment_name: string | null
+          attachment_type: string | null
+          attachment_url: string | null
           created_at: string
           id: string
           message: string
@@ -68,6 +71,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attachment_name?: string | null
+          attachment_type?: string | null
+          attachment_url?: string | null
           created_at?: string
           id?: string
           message: string
@@ -78,6 +84,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attachment_name?: string | null
+          attachment_type?: string | null
+          attachment_url?: string | null
           created_at?: string
           id?: string
           message?: string
@@ -782,6 +791,7 @@ export type Database = {
         | "advertising"
         | "compliance"
         | "management"
+        | "records_management"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -917,6 +927,7 @@ export const Constants = {
         "advertising",
         "compliance",
         "management",
+        "records_management",
       ],
     },
   },

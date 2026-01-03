@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Plus, Loader2 } from "lucide-react";
+import { FileText, Download, Plus, Loader2, Eye } from "lucide-react";
 import { CreateDocumentDialog } from "@/components/CreateDocumentDialog";
+import { DocumentViewer } from "@/components/DocumentViewer";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -15,6 +16,7 @@ interface Document {
   file_path: string | null;
   file_size: number | null;
   file_type: string | null;
+  content: string | null;
   created_at: string;
   created_by: string;
   creator_name?: string;
@@ -31,12 +33,15 @@ const departmentLabels: Record<DepartmentType, string> = {
   advertising: "Advertising",
   compliance: "Compliance",
   management: "Management",
+  records_management: "Records Management",
 };
 
 export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
   useEffect(() => {
     fetchDocuments();
@@ -112,6 +117,34 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
+  const handleDownload = async (doc: Document) => {
+    if (!doc.file_path) return;
+    
+    try {
+      const { data, error } = await supabase.storage
+        .from("documents")
+        .download(doc.file_path);
+      
+      if (error) throw error;
+      
+      const url = URL.createObjectURL(data);
+      const a = window.document.createElement("a");
+      a.href = url;
+      a.download = doc.file_name || "document";
+      window.document.body.appendChild(a);
+      a.click();
+      window.document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+    }
+  };
+
+  const handleViewDocument = (doc: Document) => {
+    setSelectedDocument(doc);
+    setViewerOpen(true);
+  };
+
   if (loading) {
     return (
       <Card className="bg-cyber-gray/50 border-2 border-cyan-500/30">
@@ -151,7 +184,7 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
                   key={doc.id}
                   className="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-cyan-500/20 hover:border-cyan-500/40 transition-colors"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="p-2 rounded-lg bg-cyan-500/10">
                       <FileText className="h-4 w-4 text-cyan-400" />
                     </div>
@@ -164,25 +197,43 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
                       </p>
                     </div>
                   </div>
-                  {doc.file_path && (
+                  <div className="flex items-center gap-1">
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="text-cyan-400 hover:text-cyan-300"
+                      onClick={() => handleViewDocument(doc)}
+                      className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/20"
                     >
-                      <Download className="h-4 w-4" />
+                      <Eye className="h-4 w-4" />
                     </Button>
-                  )}
+                    {doc.file_path && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDownload(doc)}
+                        className="text-cyber-green hover:text-cyber-green hover:bg-cyber-green/20"
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
+      
       <CreateDocumentDialog 
         open={dialogOpen} 
         onOpenChange={setDialogOpen}
         onSuccess={fetchDocuments}
+      />
+      
+      <DocumentViewer
+        open={viewerOpen}
+        onOpenChange={setViewerOpen}
+        document={selectedDocument}
       />
     </>
   );
