@@ -19,7 +19,8 @@ import {
   Target,
   Briefcase,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  FileArchive
 } from "lucide-react";
 import { ProposalCreator } from "@/components/ProposalCreator";
 import { FloatingChat } from "@/components/FloatingChat";
@@ -32,6 +33,8 @@ import { usePresence } from "@/hooks/usePresence";
 import { UploadDesignDialog } from "@/components/UploadDesignDialog";
 import { DesignGallery } from "@/components/DesignGallery";
 import { DevHubSection } from "@/components/DevHubSection";
+import { RecordsManagementSection } from "@/components/RecordsManagementSection";
+import { ManagementProjects } from "@/components/ManagementProjects";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -44,6 +47,7 @@ const departmentLabels: Record<DepartmentType, string> = {
   advertising: "Advertising",
   compliance: "Compliance",
   management: "Management",
+  records_management: "Records Management",
 };
 
 const departmentDescriptions: Record<DepartmentType, string> = {
@@ -53,6 +57,7 @@ const departmentDescriptions: Record<DepartmentType, string> = {
   advertising: "Marketing campaigns, promotions, and client outreach",
   compliance: "Legal compliance, audits, and regulatory requirements",
   management: "Operations, strategy, team coordination, and project oversight",
+  records_management: "Document management, file archiving, and organizational records",
 };
 
 const DepartmentDashboard = () => {
@@ -445,6 +450,20 @@ const DepartmentDashboard = () => {
           {currentDepartment === "developers" && (
             <div className="mb-8">
               <DevHubSection />
+            </div>
+          )}
+
+          {/* Records Management Section for Records Management Department */}
+          {currentDepartment === "records_management" && (
+            <div className="mb-8">
+              <RecordsManagementSection />
+            </div>
+          )}
+
+          {/* All Projects Overview for Management Department */}
+          {currentDepartment === "management" && (
+            <div className="mb-8">
+              <ManagementProjects />
             </div>
           )}
         </div>
