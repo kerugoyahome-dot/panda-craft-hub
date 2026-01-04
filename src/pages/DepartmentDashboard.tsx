@@ -35,6 +35,8 @@ import { DesignGallery } from "@/components/DesignGallery";
 import { DevHubSection } from "@/components/DevHubSection";
 import { RecordsManagementSection } from "@/components/RecordsManagementSection";
 import { ManagementProjects } from "@/components/ManagementProjects";
+import { AdvertisingSection } from "@/components/AdvertisingSection";
+import { ExpenseRequestsManager } from "@/components/ExpenseRequestsManager";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -434,8 +436,9 @@ const DepartmentDashboard = () => {
 
           {/* Financial Transactions for Financial Department */}
           {currentDepartment === "financial" && (
-            <div className="mb-8">
+            <div className="mb-8 space-y-6">
               <FinancialTransactions />
+              <ExpenseRequestsManager />
             </div>
           )}
 
@@ -464,6 +467,13 @@ const DepartmentDashboard = () => {
           {currentDepartment === "management" && (
             <div className="mb-8">
               <ManagementProjects />
+            </div>
+          )}
+
+          {/* Advertising Assets for Advertising Department */}
+          {currentDepartment === "advertising" && (
+            <div className="mb-8">
+              <AdvertisingSection />
             </div>
           )}
         </div>

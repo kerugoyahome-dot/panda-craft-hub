@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Plus, Loader2, Eye } from "lucide-react";
+import { FileText, Download, Plus, Loader2, Eye, Edit2 } from "lucide-react";
 import { CreateDocumentDialog } from "@/components/CreateDocumentDialog";
 import { DocumentViewer } from "@/components/DocumentViewer";
+import { WordDocumentEditor } from "@/components/WordDocumentEditor";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -41,6 +42,7 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
   useEffect(() => {
@@ -145,6 +147,22 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
     setViewerOpen(true);
   };
 
+  const handleEditDocument = (doc: Document) => {
+    setSelectedDocument(doc);
+    setEditorOpen(true);
+  };
+
+  const isDocxOrText = (doc: Document) => {
+    const fileType = doc.file_type || "";
+    const fileName = doc.file_name || "";
+    return fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+           fileName.endsWith(".docx") ||
+           fileType.startsWith("text/") ||
+           fileName.endsWith(".txt") ||
+           fileName.endsWith(".md") ||
+           doc.content;
+  };
+
   if (loading) {
     return (
       <Card className="bg-cyber-gray/50 border-2 border-cyan-500/30">
@@ -206,6 +224,16 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
+                    {isDocxOrText(doc) && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleEditDocument(doc)}
+                        className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/20"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                     {doc.file_path && (
                       <Button
                         size="sm"
@@ -234,6 +262,13 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
         open={viewerOpen}
         onOpenChange={setViewerOpen}
         document={selectedDocument}
+      />
+      
+      <WordDocumentEditor
+        open={editorOpen}
+        onOpenChange={setEditorOpen}
+        document={selectedDocument}
+        onSave={fetchDocuments}
       />
     </>
   );
