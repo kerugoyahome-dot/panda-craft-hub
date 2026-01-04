@@ -7,12 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DocumentViewer } from "@/components/DocumentViewer";
+import { WordDocumentEditor } from "@/components/WordDocumentEditor";
 import { 
   FileArchive, 
   FileText, 
   Search, 
   Download, 
   Eye, 
+  Edit2,
   Loader2,
   FolderOpen,
   Image as ImageIcon,
@@ -56,6 +58,7 @@ export const RecordsManagementSection = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
 
   useEffect(() => {
     fetchAllRecords();
@@ -171,6 +174,22 @@ export const RecordsManagementSection = () => {
   const handleViewDocument = (doc: Document) => {
     setSelectedDocument(doc);
     setViewerOpen(true);
+  };
+
+  const handleEditDocument = (doc: Document) => {
+    setSelectedDocument(doc);
+    setEditorOpen(true);
+  };
+
+  const isDocxOrText = (doc: Document) => {
+    const fileType = doc.file_type || "";
+    const fileName = doc.file_name || "";
+    return fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+           fileName.endsWith(".docx") ||
+           fileType.startsWith("text/") ||
+           fileName.endsWith(".txt") ||
+           fileName.endsWith(".md") ||
+           doc.content;
   };
 
   const handleDownload = async (filePath: string, fileName: string, bucket: string) => {
@@ -306,6 +325,16 @@ export const RecordsManagementSection = () => {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
+                          {isDocxOrText(doc) && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditDocument(doc)}
+                              className="text-purple-400 hover:text-purple-300 hover:bg-purple-500/20"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                          )}
                           {doc.file_path && (
                             <Button
                               size="sm"
@@ -384,6 +413,13 @@ export const RecordsManagementSection = () => {
         open={viewerOpen}
         onOpenChange={setViewerOpen}
         document={selectedDocument}
+      />
+      
+      <WordDocumentEditor
+        open={editorOpen}
+        onOpenChange={setEditorOpen}
+        document={selectedDocument}
+        onSave={fetchAllRecords}
       />
     </>
   );

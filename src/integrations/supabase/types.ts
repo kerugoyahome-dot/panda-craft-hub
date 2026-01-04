@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      advertising_assets: {
+        Row: {
+          asset_type: string
+          coverage: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          expense_amount: number | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          status: string | null
+          thumbnail_path: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          asset_type: string
+          coverage?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          expense_amount?: number | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          status?: string | null
+          thumbnail_path?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          asset_type?: string
+          coverage?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          expense_amount?: number | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          status?: string | null
+          thumbnail_path?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           company: string | null
@@ -197,6 +248,62 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      expense_requests: {
+        Row: {
+          advertising_asset_id: string | null
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          description: string | null
+          id: string
+          rejection_reason: string | null
+          requested_by: string
+          requesting_department: string
+          status: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          advertising_asset_id?: string | null
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          rejection_reason?: string | null
+          requested_by: string
+          requesting_department: string
+          status?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          advertising_asset_id?: string | null
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          rejection_reason?: string | null
+          requested_by?: string
+          requesting_department?: string
+          status?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expense_requests_advertising_asset_id_fkey"
+            columns: ["advertising_asset_id"]
+            isOneToOne: false
+            referencedRelation: "advertising_assets"
             referencedColumns: ["id"]
           },
         ]
