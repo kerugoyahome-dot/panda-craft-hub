@@ -10,11 +10,13 @@ import {
   Edit2,
   Eye,
   Loader2,
-  X
+  History
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import mammoth from "mammoth";
+import { saveDocumentVersion } from "@/components/DocumentVersionControl";
 
 interface WordDocumentEditorProps {
   open: boolean;
@@ -31,8 +33,10 @@ interface WordDocumentEditorProps {
 }
 
 export const WordDocumentEditor = ({ open, onOpenChange, document, onSave }: WordDocumentEditorProps) => {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [content, setContent] = useState("");
+  const [originalContent, setOriginalContent] = useState("");
   const [htmlContent, setHtmlContent] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -52,6 +56,7 @@ export const WordDocumentEditor = ({ open, onOpenChange, document, onSave }: Wor
       // If it's a stored document with content
       if (document.content) {
         setContent(document.content);
+        setOriginalContent(document.content);
         setHtmlContent(`<div style="white-space: pre-wrap;">${document.content}</div>`);
         setLoading(false);
         return;
@@ -77,6 +82,7 @@ export const WordDocumentEditor = ({ open, onOpenChange, document, onSave }: Wor
           // Also extract raw text for editing
           const textResult = await mammoth.extractRawText({ arrayBuffer });
           setContent(textResult.value);
+          setOriginalContent(textResult.value);
         } else if (document.file_type?.startsWith("text/")) {
           // Plain text file
           const { data, error } = await supabase.storage
@@ -87,9 +93,11 @@ export const WordDocumentEditor = ({ open, onOpenChange, document, onSave }: Wor
 
           const text = await data.text();
           setContent(text);
+          setOriginalContent(text);
           setHtmlContent(`<div style="white-space: pre-wrap;">${text}</div>`);
         } else {
           setContent("");
+          setOriginalContent("");
           setHtmlContent("<p>This document type cannot be displayed inline.</p>");
         }
       }
@@ -102,19 +110,48 @@ export const WordDocumentEditor = ({ open, onOpenChange, document, onSave }: Wor
   };
 
   const handleSave = async () => {
-    if (!document) return;
+    if (!document || !user) return;
 
     setSaving(true);
     try {
+      // Save current version before updating (if content has changed)
+      if (originalContent && originalContent !== content) {
+        await saveDocumentVersion(
+          document.id,
+          document.title,
+          originalContent,
+          document.file_path || null,
+          document.file_name || null,
+          null,
+          document.file_type || null,
+          user.id,
+          "Auto-saved before edit"
+        );
+      }
+
       // Update the document content in database
       const { error } = await supabase
         .from("documents")
-        .update({ content })
+        .update({ content, updated_at: new Date().toISOString() })
         .eq("id", document.id);
 
       if (error) throw error;
 
-      toast.success("Document saved successfully!");
+      // Save new version
+      await saveDocumentVersion(
+        document.id,
+        document.title,
+        content,
+        document.file_path || null,
+        document.file_name || null,
+        null,
+        document.file_type || null,
+        user.id,
+        "Manual save"
+      );
+
+      setOriginalContent(content);
+      toast.success("Document saved with version history!");
       onSave?.(content);
       setIsEditing(false);
     } catch (error) {
