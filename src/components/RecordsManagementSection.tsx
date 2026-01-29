@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DocumentViewer } from "@/components/DocumentViewer";
 import { WordDocumentEditor } from "@/components/WordDocumentEditor";
+import { DocumentVersionControl } from "@/components/DocumentVersionControl";
 import { 
   FileArchive, 
   FileText, 
@@ -19,7 +20,7 @@ import {
   FolderOpen,
   Image as ImageIcon,
   FileSpreadsheet,
-  Filter
+  History
 } from "lucide-react";
 
 interface Document {
@@ -59,6 +60,7 @@ export const RecordsManagementSection = () => {
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [versionControlOpen, setVersionControlOpen] = useState(false);
 
   useEffect(() => {
     fetchAllRecords();
@@ -179,6 +181,11 @@ export const RecordsManagementSection = () => {
   const handleEditDocument = (doc: Document) => {
     setSelectedDocument(doc);
     setEditorOpen(true);
+  };
+
+  const handleVersionControl = (doc: Document) => {
+    setSelectedDocument(doc);
+    setVersionControlOpen(true);
   };
 
   const isDocxOrText = (doc: Document) => {
@@ -335,6 +342,15 @@ export const RecordsManagementSection = () => {
                               <Edit2 className="h-4 w-4" />
                             </Button>
                           )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleVersionControl(doc)}
+                            className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/20"
+                            title="Version History"
+                          >
+                            <History className="h-4 w-4" />
+                          </Button>
                           {doc.file_path && (
                             <Button
                               size="sm"
@@ -420,6 +436,13 @@ export const RecordsManagementSection = () => {
         onOpenChange={setEditorOpen}
         document={selectedDocument}
         onSave={fetchAllRecords}
+      />
+
+      <DocumentVersionControl
+        open={versionControlOpen}
+        onOpenChange={setVersionControlOpen}
+        document={selectedDocument}
+        onRevert={fetchAllRecords}
       />
     </>
   );

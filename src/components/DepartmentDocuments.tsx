@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Plus, Loader2, Eye, Edit2 } from "lucide-react";
+import { FileText, Download, Plus, Loader2, Eye, Edit2, History } from "lucide-react";
 import { CreateDocumentDialog } from "@/components/CreateDocumentDialog";
 import { DocumentViewer } from "@/components/DocumentViewer";
 import { WordDocumentEditor } from "@/components/WordDocumentEditor";
+import { DocumentVersionControl } from "@/components/DocumentVersionControl";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -43,6 +44,7 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [versionControlOpen, setVersionControlOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
   useEffect(() => {
@@ -152,6 +154,11 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
     setEditorOpen(true);
   };
 
+  const handleVersionControl = (doc: Document) => {
+    setSelectedDocument(doc);
+    setVersionControlOpen(true);
+  };
+
   const isDocxOrText = (doc: Document) => {
     const fileType = doc.file_type || "";
     const fileName = doc.file_name || "";
@@ -234,6 +241,15 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
                         <Edit2 className="h-4 w-4" />
                       </Button>
                     )}
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleVersionControl(doc)}
+                      className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/20"
+                      title="Version History"
+                    >
+                      <History className="h-4 w-4" />
+                    </Button>
                     {doc.file_path && (
                       <Button
                         size="sm"
@@ -269,6 +285,13 @@ export const DepartmentDocuments = ({ department }: DepartmentDocumentsProps) =>
         onOpenChange={setEditorOpen}
         document={selectedDocument}
         onSave={fetchDocuments}
+      />
+
+      <DocumentVersionControl
+        open={versionControlOpen}
+        onOpenChange={setVersionControlOpen}
+        document={selectedDocument}
+        onRevert={fetchDocuments}
       />
     </>
   );

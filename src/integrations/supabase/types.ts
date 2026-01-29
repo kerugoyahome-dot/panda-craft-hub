@@ -202,6 +202,59 @@ export type Database = {
           },
         ]
       }
+      document_versions: {
+        Row: {
+          change_description: string | null
+          content: string | null
+          created_at: string
+          created_by: string
+          document_id: string
+          file_name: string | null
+          file_path: string | null
+          file_size: number | null
+          file_type: string | null
+          id: string
+          title: string
+          version_number: number
+        }
+        Insert: {
+          change_description?: string | null
+          content?: string | null
+          created_at?: string
+          created_by: string
+          document_id: string
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          title: string
+          version_number?: number
+        }
+        Update: {
+          change_description?: string | null
+          content?: string | null
+          created_at?: string
+          created_by?: string
+          document_id?: string
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          title?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_versions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           content: string | null

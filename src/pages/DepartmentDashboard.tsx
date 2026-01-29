@@ -37,6 +37,7 @@ import { RecordsManagementSection } from "@/components/RecordsManagementSection"
 import { ManagementProjects } from "@/components/ManagementProjects";
 import { AdvertisingSection } from "@/components/AdvertisingSection";
 import { ExpenseRequestsManager } from "@/components/ExpenseRequestsManager";
+import { DepartmentAnalytics } from "@/components/DepartmentAnalytics";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -420,6 +421,11 @@ const DepartmentDashboard = () => {
                 </CardContent>
               </Card>
             </div>
+          </div>
+
+          {/* Analytics Dashboard */}
+          <div className="mb-8">
+            <DepartmentAnalytics department={currentDepartment} />
           </div>
 
           {/* Secondary Content Grid */}
