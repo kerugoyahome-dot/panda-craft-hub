@@ -23,11 +23,11 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed left-0 top-0 h-screen w-20 bg-black border-r-2 border-cyber-blue/30 flex flex-col items-center py-6 gap-4 shadow-[0_0_30px_rgba(0,191,255,0.2)] z-20">
+    <nav className="fixed left-0 top-0 h-screen w-20 bg-background border-r-2 border-primary/30 flex flex-col items-center py-6 gap-4 shadow-cyber-glow z-20 transition-colors duration-300">
       <div className="mb-8 relative group cursor-pointer" onClick={() => navigate("/")}>
         {/* Holographic glow for logo */}
-        <div className="absolute inset-0 rounded-xl bg-cyber-blue opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
-        <div className="relative w-14 h-14 rounded-xl flex items-center justify-center border-2 border-cyber-blue shadow-[0_0_20px_rgba(0,191,255,0.4)] overflow-hidden bg-white/10">
+        <div className="absolute inset-0 rounded-xl bg-primary opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
+        <div className="relative w-14 h-14 rounded-xl flex items-center justify-center border-2 border-primary shadow-cyber-glow overflow-hidden bg-card/50">
           <img src={jlLogo} alt="JL Software" className="w-full h-full object-contain" />
         </div>
       </div>
@@ -48,8 +48,8 @@ const Navigation = () => {
             size="icon"
             className={`w-12 h-12 transition-all duration-300 font-orbitron ${
               isActive 
-                ? "bg-cyber-blue/30 text-cyber-blue-glow border-2 border-cyber-blue shadow-[0_0_20px_rgba(0,191,255,0.5)] hover:bg-cyber-blue/40" 
-                : "text-muted-foreground hover:text-cyber-blue hover:bg-cyber-gray hover:shadow-[0_0_15px_rgba(0,191,255,0.2)]"
+                ? "bg-primary/30 text-primary border-2 border-primary shadow-cyber-glow hover:bg-primary/40" 
+                : "text-muted-foreground hover:text-primary hover:bg-muted hover:shadow-cyber-glow"
             }`}
             title={item.label}
             onClick={() => item.path !== "#" && navigate(item.path)}
