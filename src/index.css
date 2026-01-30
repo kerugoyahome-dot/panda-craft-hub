@@ -4,10 +4,18 @@
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
+
+THEMES:
+- Cyber (default): CIA-style dark terminal with neon blue/green accents
+- Normal: Light professional theme based on JL Software brand colors (blue primary, orange accent)
 */
 
 @layer base {
-  :root {
+  /* ========================================
+     CYBER THEME (Default - CIA/Terminal Style)
+     ======================================== */
+  :root,
+  .theme-cyber {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
@@ -17,7 +25,7 @@ All colors MUST be HSL.
     --popover: 0 0% 5%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 45 100% 51%;
+    --primary: 200 100% 50%;
     --primary-foreground: 0 0% 0%;
 
     --secondary: 0 0% 10%;
@@ -26,7 +34,7 @@ All colors MUST be HSL.
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 70%;
 
-    --accent: 45 100% 51%;
+    --accent: 150 70% 50%;
     --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,25 +42,24 @@ All colors MUST be HSL.
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 45 100% 51%;
+    --ring: 200 100% 50%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 3%;
     --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 45 100% 51%;
+    --sidebar-primary: 200 100% 50%;
     --sidebar-primary-foreground: 0 0% 0%;
     --sidebar-accent: 0 0% 10%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 45 100% 51%;
+    --sidebar-ring: 200 100% 50%;
 
-    /* Custom Panda Tech tokens */
+    /* Cyber theme specific tokens */
     --gold: 45 100% 51%;
     --gold-dark: 45 100% 45%;
     --gold-light: 45 100% 65%;
     
-    /* Cyber theme tokens */
     --cyber-blue: 200 100% 50%;
     --cyber-blue-dark: 200 100% 35%;
     --cyber-blue-glow: 200 100% 60%;
@@ -74,6 +81,80 @@ All colors MUST be HSL.
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  /* ========================================
+     NORMAL THEME (Light - JL Software Brand)
+     Brand Colors: Blue (#0099CC), Orange (#FF8C00), Silver/Gray
+     ======================================== */
+  .theme-normal {
+    --background: 210 20% 98%;
+    --foreground: 210 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 20% 10%;
+
+    /* JL Software Blue - Primary brand color */
+    --primary: 195 100% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 15% 93%;
+    --secondary-foreground: 210 20% 20%;
+
+    --muted: 210 15% 90%;
+    --muted-foreground: 210 10% 45%;
+
+    /* JL Software Orange - Accent color */
+    --accent: 30 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 15% 85%;
+    --input: 210 15% 85%;
+    --ring: 195 100% 40%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 210 20% 96%;
+    --sidebar-foreground: 210 20% 20%;
+    --sidebar-primary: 195 100% 40%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 15% 90%;
+    --sidebar-accent-foreground: 210 20% 20%;
+    --sidebar-border: 210 15% 88%;
+    --sidebar-ring: 195 100% 40%;
+
+    /* Brand tokens - mapped to normal theme */
+    --gold: 30 100% 50%;
+    --gold-dark: 30 100% 45%;
+    --gold-light: 30 100% 60%;
+    
+    /* Cyber tokens remapped for light theme */
+    --cyber-blue: 195 100% 40%;
+    --cyber-blue-dark: 195 100% 30%;
+    --cyber-blue-glow: 195 100% 50%;
+    --cyber-green: 30 100% 50%;
+    --cyber-green-glow: 30 100% 55%;
+    --cyber-gray: 210 15% 93%;
+    --cyber-gray-light: 210 15% 96%;
+    
+    --gradient-gold: linear-gradient(135deg, hsl(30 100% 45%), hsl(30 100% 55%));
+    --gradient-dark: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 20% 95%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 15% 98%));
+    --gradient-cyber: linear-gradient(135deg, hsl(210 20% 98%), hsl(195 100% 95% / 0.5));
+    --gradient-cyber-border: linear-gradient(90deg, hsl(195 100% 40%), hsl(30 100% 50%));
+    
+    --shadow-gold: 0 10px 40px -10px hsl(30 100% 50% / 0.2);
+    --shadow-card: 0 4px 16px hsl(210 20% 10% / 0.08);
+    --shadow-cyber-glow: 0 4px 20px hsl(195 100% 40% / 0.15);
+    --shadow-cyber-input: 0 0 8px hsl(195 100% 40% / 0.2);
+    
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
 }
 
 @layer base {
@@ -82,25 +163,25 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
   }
 }
 
-/* Custom scrollbar for messaging */
+/* Custom scrollbar for messaging - adapts to theme */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: hsl(var(--cyber-gray) / 0.3);
+  background: hsl(var(--muted) / 0.3);
   border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--cyber-blue) / 0.5);
+  background: hsl(var(--primary) / 0.5);
   border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--cyber-blue) / 0.7);
+  background: hsl(var(--primary) / 0.7);
 }
