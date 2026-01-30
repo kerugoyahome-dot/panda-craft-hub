@@ -83,77 +83,79 @@ THEMES:
   }
 
   /* ========================================
-     NORMAL THEME (Light - JL Software Brand)
-     Brand Colors: Blue (#0099CC), Orange (#FF8C00), Silver/Gray
+     NORMAL THEME (Clean Professional Light)
+     Brand Colors: Blue (#0077B6), Orange (#F77F00)
+     No neon, no glow, no cyber effects - just clean UI
      ======================================== */
   .theme-normal {
-    --background: 210 20% 98%;
-    --foreground: 210 20% 10%;
+    --background: 0 0% 98%;
+    --foreground: 220 15% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 10%;
+    --card-foreground: 220 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 10%;
+    --popover-foreground: 220 15% 15%;
 
-    /* JL Software Blue - Primary brand color */
-    --primary: 195 100% 40%;
+    /* JL Software Blue - Clean primary */
+    --primary: 200 80% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 15% 93%;
-    --secondary-foreground: 210 20% 20%;
+    --secondary: 220 10% 94%;
+    --secondary-foreground: 220 15% 25%;
 
-    --muted: 210 15% 90%;
-    --muted-foreground: 210 10% 45%;
+    --muted: 220 10% 92%;
+    --muted-foreground: 220 10% 45%;
 
-    /* JL Software Orange - Accent color */
-    --accent: 30 100% 50%;
+    /* JL Software Orange - Clean accent */
+    --accent: 32 95% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 15% 85%;
-    --input: 210 15% 85%;
-    --ring: 195 100% 40%;
+    --border: 220 10% 88%;
+    --input: 220 10% 88%;
+    --ring: 200 80% 40%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 210 20% 96%;
-    --sidebar-foreground: 210 20% 20%;
-    --sidebar-primary: 195 100% 40%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 15% 25%;
+    --sidebar-primary: 200 80% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 15% 90%;
-    --sidebar-accent-foreground: 210 20% 20%;
-    --sidebar-border: 210 15% 88%;
-    --sidebar-ring: 195 100% 40%;
+    --sidebar-accent: 220 10% 95%;
+    --sidebar-accent-foreground: 220 15% 25%;
+    --sidebar-border: 220 10% 90%;
+    --sidebar-ring: 200 80% 40%;
 
-    /* Brand tokens - mapped to normal theme */
-    --gold: 30 100% 50%;
-    --gold-dark: 30 100% 45%;
-    --gold-light: 30 100% 60%;
+    /* Override cyber tokens with clean alternatives */
+    --gold: 32 95% 50%;
+    --gold-dark: 32 95% 45%;
+    --gold-light: 32 95% 60%;
     
-    /* Cyber tokens remapped for light theme */
-    --cyber-blue: 195 100% 40%;
-    --cyber-blue-dark: 195 100% 30%;
-    --cyber-blue-glow: 195 100% 50%;
-    --cyber-green: 30 100% 50%;
-    --cyber-green-glow: 30 100% 55%;
-    --cyber-gray: 210 15% 93%;
-    --cyber-gray-light: 210 15% 96%;
+    --cyber-blue: 200 80% 40%;
+    --cyber-blue-dark: 200 80% 30%;
+    --cyber-blue-glow: 200 80% 45%;
+    --cyber-green: 32 95% 50%;
+    --cyber-green-glow: 32 95% 55%;
+    --cyber-gray: 220 10% 95%;
+    --cyber-gray-light: 220 10% 97%;
     
-    --gradient-gold: linear-gradient(135deg, hsl(30 100% 45%), hsl(30 100% 55%));
-    --gradient-dark: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 20% 95%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 15% 98%));
-    --gradient-cyber: linear-gradient(135deg, hsl(210 20% 98%), hsl(195 100% 95% / 0.5));
-    --gradient-cyber-border: linear-gradient(90deg, hsl(195 100% 40%), hsl(30 100% 50%));
+    /* Clean gradients - subtle or flat */
+    --gradient-gold: linear-gradient(135deg, hsl(32 95% 50%), hsl(32 95% 55%));
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 98%), hsl(0 0% 96%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
+    --gradient-cyber: linear-gradient(135deg, hsl(0 0% 99%), hsl(0 0% 97%));
+    --gradient-cyber-border: linear-gradient(90deg, hsl(200 80% 40%), hsl(32 95% 50%));
     
-    --shadow-gold: 0 10px 40px -10px hsl(30 100% 50% / 0.2);
-    --shadow-card: 0 4px 16px hsl(210 20% 10% / 0.08);
-    --shadow-cyber-glow: 0 4px 20px hsl(195 100% 40% / 0.15);
-    --shadow-cyber-input: 0 0 8px hsl(195 100% 40% / 0.2);
+    /* Clean shadows - no glow, just subtle depth */
+    --shadow-gold: 0 2px 8px hsl(220 15% 15% / 0.08);
+    --shadow-card: 0 1px 3px hsl(220 15% 15% / 0.06), 0 1px 2px hsl(220 15% 15% / 0.04);
+    --shadow-cyber-glow: 0 2px 8px hsl(220 15% 15% / 0.1);
+    --shadow-cyber-input: 0 1px 2px hsl(220 15% 15% / 0.05);
     
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.2s ease;
   }
 }
 
