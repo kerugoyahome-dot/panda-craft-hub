@@ -65,6 +65,48 @@ export type Database = {
         }
         Relationships: []
       }
+      audit_logs: {
+        Row: {
+          action_type: string
+          created_at: string
+          department: string | null
+          description: string
+          entity_id: string | null
+          entity_name: string | null
+          entity_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          department?: string | null
+          description: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          department?: string | null
+          description?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           company: string | null
@@ -563,6 +605,60 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          category: string
+          created_at: string
+          deep_link: string | null
+          department: string | null
+          entity_id: string | null
+          entity_type: string | null
+          handled_at: string | null
+          id: string
+          is_handled: boolean
+          is_read: boolean
+          message: string
+          priority: Database["public"]["Enums"]["notification_priority"]
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          deep_link?: string | null
+          department?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          handled_at?: string | null
+          id?: string
+          is_handled?: boolean
+          is_read?: boolean
+          message: string
+          priority?: Database["public"]["Enums"]["notification_priority"]
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          deep_link?: string | null
+          department?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          handled_at?: string | null
+          id?: string
+          is_handled?: boolean
+          is_read?: boolean
+          message?: string
+          priority?: Database["public"]["Enums"]["notification_priority"]
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -952,6 +1048,16 @@ export type Database = {
         | "compliance"
         | "management"
         | "records_management"
+      notification_priority: "critical" | "action_required" | "informational"
+      unified_status:
+        | "draft"
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "in_progress"
+        | "completed"
+        | "rejected"
+        | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1088,6 +1194,17 @@ export const Constants = {
         "compliance",
         "management",
         "records_management",
+      ],
+      notification_priority: ["critical", "action_required", "informational"],
+      unified_status: [
+        "draft",
+        "submitted",
+        "under_review",
+        "approved",
+        "in_progress",
+        "completed",
+        "rejected",
+        "archived",
       ],
     },
   },

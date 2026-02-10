@@ -38,6 +38,7 @@ import { ManagementProjects } from "@/components/ManagementProjects";
 import { AdvertisingSection } from "@/components/AdvertisingSection";
 import { ExpenseRequestsManager } from "@/components/ExpenseRequestsManager";
 import { DepartmentAnalytics } from "@/components/DepartmentAnalytics";
+import { AuditTrailViewer } from "@/components/AuditTrailViewer";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -476,6 +477,10 @@ const DepartmentDashboard = () => {
             </div>
           )}
 
+          {/* Audit Trail */}
+          <div className="mb-8">
+            <AuditTrailViewer department={currentDepartment} />
+          </div>
           {/* Advertising Assets for Advertising Department */}
           {currentDepartment === "advertising" && (
             <div className="mb-8">
