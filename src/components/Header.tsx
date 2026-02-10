@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Search, User, LogOut, Lock } from "lucide-react";
+import { Search, User, LogOut, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -14,6 +14,7 @@ import { SearchDialog } from "@/components/SearchDialog";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 import { LockScreen } from "@/components/LockScreen";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { NotificationCenter } from "@/components/NotificationCenter";
 
 const Header = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -45,10 +46,7 @@ const Header = () => {
         {/* Theme Switcher - Global Access */}
         <ThemeSwitcher />
         
-        <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 hover:shadow-cyber-glow">
-          <Bell className="h-5 w-5 text-primary" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full animate-pulse"></span>
-        </Button>
+        <NotificationCenter />
         
         {user && (
           <DropdownMenu>

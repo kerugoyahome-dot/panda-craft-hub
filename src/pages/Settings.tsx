@@ -10,7 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Bell, Shield, Database, Mail, Download, Trash2 } from "lucide-react";
+import { User, Bell, Shield, Database, Mail, Download, Trash2, ScrollText } from "lucide-react";
+import { AuditTrailViewer } from "@/components/AuditTrailViewer";
 import { useAuth } from "@/hooks/useAuth";
 import {
   AlertDialog,
@@ -340,6 +341,10 @@ const Settings = () => {
               <TabsTrigger value="data" className="font-share-tech">
                 <Database className="w-4 h-4 mr-2" />
                 DATA
+              </TabsTrigger>
+              <TabsTrigger value="audit" className="font-share-tech">
+                <ScrollText className="w-4 h-4 mr-2" />
+                AUDIT LOG
               </TabsTrigger>
             </TabsList>
 
@@ -682,6 +687,11 @@ const Settings = () => {
                   </div>
                 </div>
               </Card>
+            </TabsContent>
+
+            {/* Audit Trail Tab */}
+            <TabsContent value="audit">
+              <AuditTrailViewer />
             </TabsContent>
           </Tabs>
         </div>
