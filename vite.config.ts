@@ -17,9 +17,9 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
-        name: "JL Software & Digital Solutions",
-        short_name: "JL Software",
-        description: "Enterprise-grade software development and digital solutions",
+        name: "Abancool Techs Internal System",
+        short_name: "Abancool Techs",
+        description: "Abancool Techs - Internal Operations & Management System",
         theme_color: "#00BFFF",
         background_color: "#000000",
         display: "standalone",

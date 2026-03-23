@@ -120,7 +120,7 @@ const TeamDashboard = () => {
       <header className="fixed top-0 left-0 right-0 h-16 bg-black/90 backdrop-blur-xl border-b-2 border-cyber-blue/30 flex items-center justify-between px-8 z-10 shadow-[0_0_20px_rgba(0,191,255,0.2)]">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-lg flex items-center justify-center border-2 border-cyber-blue shadow-[0_0_15px_rgba(0,191,255,0.3)] overflow-hidden bg-white/10">
-            <img src={jlLogo} alt="JL Software" className="w-full h-full object-contain" />
+            <img src={jlLogo} alt="Abancool Techs" className="w-full h-full object-contain" />
           </div>
           <div>
             <h1 className="text-lg font-bold font-orbitron text-cyber-blue-glow">
