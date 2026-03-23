@@ -39,6 +39,7 @@ import { AdvertisingSection } from "@/components/AdvertisingSection";
 import { ExpenseRequestsManager } from "@/components/ExpenseRequestsManager";
 import { DepartmentAnalytics } from "@/components/DepartmentAnalytics";
 import { AuditTrailViewer } from "@/components/AuditTrailViewer";
+import { DocumentWorkspace } from "@/components/DocumentWorkspace";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
