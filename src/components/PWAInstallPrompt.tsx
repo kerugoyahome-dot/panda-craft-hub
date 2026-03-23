@@ -80,7 +80,7 @@ export const PWAInstallPrompt = () => {
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-white font-orbitron text-sm mb-1">
-              Install JL Software App
+              Install Abancool Techs App
             </h3>
             <p className="text-xs text-muted-foreground mb-3">
               Install our app for quick access, offline support, and a better experience!

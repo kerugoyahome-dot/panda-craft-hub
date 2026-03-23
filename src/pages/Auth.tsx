@@ -99,15 +99,15 @@ const Auth = () => {
             
             {/* Logo with cyber effect */}
             <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[hsl(200,100%,50%,0.2)] to-[hsl(150,70%,50%,0.2)] border-2 border-[hsl(200,100%,50%)] flex items-center justify-center backdrop-blur-sm shadow-[0_0_30px_rgba(0,191,255,0.5)] overflow-hidden">
-              <img src={jlLogo} alt="JL Software" className="w-full h-full object-contain p-2" />
+              <img src={jlLogo} alt="Abancool Techs" className="w-full h-full object-contain p-2" />
             </div>
           </div>
           
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[hsl(200,100%,60%)] to-[hsl(150,70%,60%)] bg-clip-text text-transparent">
-            JL Software & Digital
+            Abancool Techs
           </h1>
           <p className="text-[hsl(200,100%,50%)] font-mono text-sm tracking-wider">
-            ▸ SECURE ACCESS TERMINAL ◂
+            ▸ INTERNAL SYSTEM ACCESS ◂
           </p>
         </div>
 

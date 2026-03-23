@@ -106,10 +106,10 @@ const Index = () => {
               <span className="text-cyber-green font-share-tech text-sm tracking-wider">▸ SYSTEM STATUS: OPERATIONAL</span>
             </div>
             <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-cyber-blue-glow via-white to-cyber-green-glow bg-clip-text text-transparent font-orbitron">
-              JL SOFTWARE & DIGITAL
+              ABANCOOL TECHS
             </h1>
             <p className="text-cyber-blue font-share-tech text-lg">
-              ENTERPRISE CONTROL TERMINAL // SECURE ACCESS GRANTED
+              INTERNAL SYSTEM // SECURE ACCESS GRANTED
             </p>
           </div>
 

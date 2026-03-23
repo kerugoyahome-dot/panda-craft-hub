@@ -39,6 +39,7 @@ import { AdvertisingSection } from "@/components/AdvertisingSection";
 import { ExpenseRequestsManager } from "@/components/ExpenseRequestsManager";
 import { DepartmentAnalytics } from "@/components/DepartmentAnalytics";
 import { AuditTrailViewer } from "@/components/AuditTrailViewer";
+import { DocumentWorkspace } from "@/components/DocumentWorkspace";
 import { Database } from "@/integrations/supabase/types";
 
 type DepartmentType = Database["public"]["Enums"]["department_type"];
@@ -439,6 +440,11 @@ const DepartmentDashboard = () => {
             
             {/* Documents */}
             <DepartmentDocuments department={currentDepartment} />
+          </div>
+
+          {/* Document Workspace - Available for ALL departments */}
+          <div className="mb-8">
+            <DocumentWorkspace department={currentDepartment} />
           </div>
 
           {/* Financial Transactions for Financial Department */}
