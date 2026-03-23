@@ -442,6 +442,11 @@ const DepartmentDashboard = () => {
             <DepartmentDocuments department={currentDepartment} />
           </div>
 
+          {/* Document Workspace - Available for ALL departments */}
+          <div className="mb-8">
+            <DocumentWorkspace department={currentDepartment} />
+          </div>
+
           {/* Financial Transactions for Financial Department */}
           {currentDepartment === "financial" && (
             <div className="mb-8 space-y-6">
