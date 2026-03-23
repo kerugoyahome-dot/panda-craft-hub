@@ -104,10 +104,10 @@ const Auth = () => {
           </div>
           
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-[hsl(200,100%,60%)] to-[hsl(150,70%,60%)] bg-clip-text text-transparent">
-            JL Software & Digital
+            Abancool Techs
           </h1>
           <p className="text-[hsl(200,100%,50%)] font-mono text-sm tracking-wider">
-            ▸ SECURE ACCESS TERMINAL ◂
+            ▸ INTERNAL SYSTEM ACCESS ◂
           </p>
         </div>
 
