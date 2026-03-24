@@ -2,7 +2,7 @@ import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChar
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import jlLogo from "@/assets/jl-logo.png";
+import abancoolLogo from "@/assets/abancool-logo.png";
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const Navigation = () => {
         {/* Holographic glow for logo */}
         <div className="absolute inset-0 rounded-xl bg-primary opacity-20 blur-lg group-hover:opacity-40 transition-opacity" />
         <div className="relative w-14 h-14 rounded-xl flex items-center justify-center border-2 border-primary shadow-cyber-glow overflow-hidden bg-card/50">
-          <img src={jlLogo} alt="Abancool Techs" className="w-full h-full object-contain" />
+          <img src={abancoolLogo} alt="Abancool Techs" className="w-full h-full object-contain" />
         </div>
       </div>
       

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS github_repositories_full_name_user_id_key ON public.github_repositories (full_name, user_id);

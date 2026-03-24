@@ -62,7 +62,7 @@ serve(async (req) => {
     const headers = {
       'Authorization': `token ${githubToken}`,
       'Accept': 'application/vnd.github.v3+json',
-      'User-Agent': 'Lovable-DevHub',
+      'User-Agent': 'Abancool-DevHub',
     };
 
     if (action === 'fetchRepos') {

@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import jlLogo from "@/assets/jl-logo.png";
+import abancoolLogo from "@/assets/abancool-logo.png";
 
 const Auth = () => {
   const { signIn, signUp, user, loading } = useAuth();
@@ -99,7 +99,7 @@ const Auth = () => {
             
             {/* Logo with cyber effect */}
             <div className="relative w-full h-full rounded-full bg-gradient-to-br from-[hsl(200,100%,50%,0.2)] to-[hsl(150,70%,50%,0.2)] border-2 border-[hsl(200,100%,50%)] flex items-center justify-center backdrop-blur-sm shadow-[0_0_30px_rgba(0,191,255,0.5)] overflow-hidden">
-              <img src={jlLogo} alt="Abancool Techs" className="w-full h-full object-contain p-2" />
+              <img src={abancoolLogo} alt="Abancool Techs" className="w-full h-full object-contain p-2" />
             </div>
           </div>
           
