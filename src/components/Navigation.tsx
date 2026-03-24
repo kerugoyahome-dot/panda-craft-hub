@@ -2,7 +2,7 @@ import { LayoutDashboard, Users, FolderKanban, Palette, FileText, Code2, BarChar
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import jlLogo from "@/assets/jl-logo.png";
+import abancoolLogo from "@/assets/abancool-logo.png";
 
 const Navigation = () => {
   const navigate = useNavigate();

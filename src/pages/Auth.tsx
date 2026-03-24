@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import jlLogo from "@/assets/jl-logo.png";
+import abancoolLogo from "@/assets/abancool-logo.png";
 
 const Auth = () => {
   const { signIn, signUp, user, loading } = useAuth();
