@@ -2,159 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-
-THEMES:
-- Cyber (default): CIA-style dark terminal with neon blue/green accents
-- Normal: Light professional theme based on JL Software brand colors (blue primary, orange accent)
+/* ABANCOOL TECHS INTERNAL SYSTEM
+   Clean professional blue & white theme with serif typography
 */
 
 @layer base {
-  /* ========================================
-     CYBER THEME (Default - CIA/Terminal Style)
-     ======================================== */
-  :root,
-  .theme-cyber {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 200 100% 50%;
-    --primary-foreground: 0 0% 0%;
-
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 70%;
-
-    --accent: 150 70% 50%;
-    --accent-foreground: 0 0% 0%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 200 100% 50%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 0 0% 3%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 200 100% 50%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 10%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 200 100% 50%;
-
-    /* Cyber theme specific tokens */
-    --gold: 45 100% 51%;
-    --gold-dark: 45 100% 45%;
-    --gold-light: 45 100% 65%;
-    
-    --cyber-blue: 200 100% 50%;
-    --cyber-blue-dark: 200 100% 35%;
-    --cyber-blue-glow: 200 100% 60%;
-    --cyber-green: 150 70% 50%;
-    --cyber-green-glow: 150 70% 60%;
-    --cyber-gray: 0 0% 15%;
-    --cyber-gray-light: 0 0% 20%;
-    
-    --gradient-gold: linear-gradient(135deg, hsl(45 100% 45%), hsl(45 100% 60%));
-    --gradient-dark: linear-gradient(180deg, hsl(0 0% 0%), hsl(0 0% 5%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 5%), hsl(0 0% 10%));
-    --gradient-cyber: linear-gradient(135deg, hsl(0 0% 3%), hsl(200 100% 10% / 0.3));
-    --gradient-cyber-border: linear-gradient(90deg, hsl(200 100% 50%), hsl(150 70% 50%));
-    
-    --shadow-gold: 0 10px 40px -10px hsl(45 100% 51% / 0.3);
-    --shadow-card: 0 8px 24px hsl(0 0% 0% / 0.4);
-    --shadow-cyber-glow: 0 0 30px hsl(200 100% 50% / 0.4), 0 0 60px hsl(200 100% 50% / 0.2);
-    --shadow-cyber-input: 0 0 15px hsl(200 100% 50% / 0.5);
-    
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* ========================================
-     NORMAL THEME (Clean Professional Light)
-     Brand Colors: Blue (#0077B6), Orange (#F77F00)
-     No neon, no glow, no cyber effects - just clean UI
-     ======================================== */
-  .theme-normal {
-    --background: 0 0% 98%;
-    --foreground: 220 15% 15%;
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
+    --card-foreground: 215 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
+    --popover-foreground: 215 25% 15%;
 
-    /* JL Software Blue - Clean primary */
-    --primary: 200 80% 40%;
+    --primary: 210 80% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 10% 94%;
-    --secondary-foreground: 220 15% 25%;
+    --secondary: 210 15% 93%;
+    --secondary-foreground: 215 25% 25%;
 
-    --muted: 220 10% 92%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 210 15% 94%;
+    --muted-foreground: 215 10% 45%;
 
-    /* JL Software Orange - Clean accent */
-    --accent: 32 95% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 60% 92%;
+    --accent-foreground: 210 80% 35%;
 
-    --destructive: 0 70% 55%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 10% 88%;
-    --input: 220 10% 88%;
-    --ring: 200 80% 40%;
+    --border: 210 15% 88%;
+    --input: 210 15% 88%;
+    --ring: 210 80% 45%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 15% 25%;
-    --sidebar-primary: 200 80% 40%;
+    --sidebar-foreground: 215 25% 25%;
+    --sidebar-primary: 210 80% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 10% 95%;
-    --sidebar-accent-foreground: 220 15% 25%;
-    --sidebar-border: 220 10% 90%;
-    --sidebar-ring: 200 80% 40%;
+    --sidebar-accent: 210 15% 95%;
+    --sidebar-accent-foreground: 215 25% 25%;
+    --sidebar-border: 210 15% 90%;
+    --sidebar-ring: 210 80% 45%;
 
-    /* Override cyber tokens with clean alternatives */
-    --gold: 32 95% 50%;
-    --gold-dark: 32 95% 45%;
-    --gold-light: 32 95% 60%;
-    
-    --cyber-blue: 200 80% 40%;
-    --cyber-blue-dark: 200 80% 30%;
-    --cyber-blue-glow: 200 80% 45%;
-    --cyber-green: 32 95% 50%;
-    --cyber-green-glow: 32 95% 55%;
-    --cyber-gray: 220 10% 95%;
-    --cyber-gray-light: 220 10% 97%;
-    
-    /* Clean gradients - subtle or flat */
-    --gradient-gold: linear-gradient(135deg, hsl(32 95% 50%), hsl(32 95% 55%));
-    --gradient-dark: linear-gradient(180deg, hsl(0 0% 98%), hsl(0 0% 96%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 99%));
-    --gradient-cyber: linear-gradient(135deg, hsl(0 0% 99%), hsl(0 0% 97%));
-    --gradient-cyber-border: linear-gradient(90deg, hsl(200 80% 40%), hsl(32 95% 50%));
-    
-    /* Clean shadows - no glow, just subtle depth */
-    --shadow-gold: 0 2px 8px hsl(220 15% 15% / 0.08);
-    --shadow-card: 0 1px 3px hsl(220 15% 15% / 0.06), 0 1px 2px hsl(220 15% 15% / 0.04);
-    --shadow-cyber-glow: 0 2px 8px hsl(220 15% 15% / 0.1);
-    --shadow-cyber-input: 0 1px 2px hsl(220 15% 15% / 0.05);
-    
+    /* Brand tokens */
+    --gold: 32 90% 50%;
+    --gold-dark: 32 90% 42%;
+    --gold-light: 32 90% 62%;
+
+    /* Utility tokens mapped to primary palette */
+    --cyber-blue: 210 80% 45%;
+    --cyber-blue-dark: 210 80% 35%;
+    --cyber-blue-glow: 210 80% 50%;
+    --cyber-green: 150 50% 42%;
+    --cyber-green-glow: 150 50% 48%;
+    --cyber-gray: 210 15% 95%;
+    --cyber-gray-light: 210 15% 97%;
+
+    /* Clean gradients */
+    --gradient-gold: linear-gradient(135deg, hsl(32 90% 50%), hsl(32 90% 58%));
+    --gradient-dark: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 20% 96%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 15% 99%));
+    --gradient-cyber: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 15% 97%));
+    --gradient-cyber-border: linear-gradient(90deg, hsl(210 80% 45%), hsl(210 60% 55%));
+
+    /* Clean shadows */
+    --shadow-gold: 0 2px 8px hsl(215 25% 15% / 0.06);
+    --shadow-card: 0 1px 3px hsl(215 25% 15% / 0.06), 0 1px 2px hsl(215 25% 15% / 0.04);
+    --shadow-cyber-glow: 0 2px 12px hsl(210 80% 45% / 0.08);
+    --shadow-cyber-input: 0 1px 3px hsl(215 25% 15% / 0.06);
+
     --transition-smooth: all 0.2s ease;
   }
 }
@@ -165,25 +84,30 @@ THEMES:
   }
 
   body {
-    @apply bg-background text-foreground transition-colors duration-300;
+    @apply bg-background text-foreground;
+    font-family: 'Source Serif 4', 'Georgia', serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', 'Georgia', serif;
   }
 }
 
-/* Custom scrollbar for messaging - adapts to theme */
+/* Clean scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: hsl(var(--muted) / 0.3);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.5);
-  border-radius: 4px;
+  background: hsl(var(--primary) / 0.3);
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.7);
+  background: hsl(var(--primary) / 0.5);
 }
