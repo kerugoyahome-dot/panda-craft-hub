@@ -13,7 +13,6 @@ import {
 import { SearchDialog } from "@/components/SearchDialog";
 import AdminDashboardSwitcher from "@/components/AdminDashboardSwitcher";
 import { LockScreen } from "@/components/LockScreen";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { NotificationCenter } from "@/components/NotificationCenter";
 
 const Header = () => {
@@ -25,54 +24,51 @@ const Header = () => {
     <>
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <LockScreen open={lockOpen} onOpenChange={setLockOpen} />
-      <header className="fixed top-0 left-20 right-0 h-16 bg-background/90 backdrop-blur-xl border-b-2 border-primary/30 flex items-center justify-between px-8 z-10 shadow-cyber-glow transition-colors duration-300">
+      <header className="fixed top-0 left-20 right-0 h-16 bg-card/95 backdrop-blur-sm border-b border-border flex items-center justify-between px-8 z-10 shadow-sm">
         <button
           onClick={() => setSearchOpen(true)}
           className="flex items-center gap-4 flex-1 max-w-xl group"
         >
-          <Search className="h-5 w-5 text-primary" />
-          <div className="w-full p-2 rounded-md border border-primary/30 bg-muted text-left text-muted-foreground font-share-tech hover:border-primary/50 transition-colors">
-            ▸ SEARCH DATABASE...
+          <Search className="h-5 w-5 text-muted-foreground" />
+          <div className="w-full p-2 rounded-md border border-border bg-muted/50 text-left text-muted-foreground text-sm hover:border-primary/30 transition-colors">
+            Search...
           </div>
         </button>
       
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         {isAdmin && (
           <div className="flex items-center gap-2">
             <AdminDashboardSwitcher />
           </div>
         )}
         
-        {/* Theme Switcher - Global Access */}
-        <ThemeSwitcher />
-        
         <NotificationCenter />
         
         {user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-3 pl-4 border-l-2 border-primary/30 cursor-pointer hover:opacity-80 transition-opacity">
+              <div className="flex items-center gap-3 pl-4 border-l border-border cursor-pointer hover:opacity-80 transition-opacity">
                 <div className="text-right">
-                  <p className="text-sm font-medium font-orbitron text-primary">
-                    {user.user_metadata?.full_name || 'AGENT'}
+                  <p className="text-sm font-semibold text-foreground">
+                    {user.user_metadata?.full_name || 'User'}
                   </p>
-                  <p className="text-xs text-accent font-share-tech">{user.email}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
-                <Button variant="ghost" size="icon" className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-primary hover:shadow-cyber-glow">
+                <Button variant="ghost" size="icon" className="rounded-full bg-primary/10 border border-primary/20">
                   <User className="h-5 w-5 text-primary" />
                 </Button>
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-card border-2 border-primary/30">
-              <DropdownMenuLabel className="font-orbitron text-primary">ACCOUNT ACCESS</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-primary/20" />
-              <DropdownMenuItem onClick={() => setLockOpen(true)} className="cursor-pointer font-share-tech hover:bg-primary/10">
-                <Lock className="mr-2 h-4 w-4 text-primary" />
-                <span className="text-primary">LOCK SCREEN</span>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setLockOpen(true)} className="cursor-pointer">
+                <Lock className="mr-2 h-4 w-4" />
+                <span>Lock Screen</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={signOut} className="text-destructive cursor-pointer font-share-tech hover:bg-destructive/10">
+              <DropdownMenuItem onClick={signOut} className="text-destructive cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>TERMINATE SESSION</span>
+                <span>Sign Out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
