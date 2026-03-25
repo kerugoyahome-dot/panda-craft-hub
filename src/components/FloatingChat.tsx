@@ -373,15 +373,15 @@ export const FloatingChat = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-cyber-blue/20 border-2 border-cyber-blue hover:bg-cyber-blue/30 transition-all shadow-[0_0_20px_rgba(0,191,255,0.4)] hover:shadow-[0_0_30px_rgba(0,191,255,0.6)] flex items-center justify-center group"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-lg flex items-center justify-center"
       >
         {isOpen ? (
-          <X className="h-6 w-6 text-cyber-blue" />
+          <X className="h-6 w-6" />
         ) : (
           <>
-            <MessageSquare className="h-6 w-6 text-cyber-blue" />
+            <MessageSquare className="h-6 w-6" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold animate-pulse">
+              <span className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full text-white text-xs flex items-center justify-center font-bold">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             )}
@@ -391,31 +391,31 @@ export const FloatingChat = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 h-[520px] bg-cyber-gray/95 backdrop-blur-xl border-2 border-cyber-blue/50 rounded-xl shadow-[0_0_40px_rgba(0,191,255,0.3)] flex flex-col overflow-hidden animate-fade-in">
+        <div className="fixed bottom-24 right-6 z-50 w-96 h-[520px] bg-card border border-border rounded-xl shadow-xl flex flex-col overflow-hidden animate-fade-in">
           {/* Header */}
-          <div className="p-4 border-b border-cyber-blue/30 bg-black/50">
+          <div className="p-4 border-b border-border bg-muted/50">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-orbitron text-cyber-blue flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                DEPARTMENT CHAT
+              <h3 className="font-semibold text-foreground flex items-center gap-2 font-playfair">
+                <MessageSquare className="h-5 w-5 text-primary" />
+                Department Chat
               </h3>
               {unreadCount > 0 && (
-                <span className="flex items-center gap-1 text-xs text-cyber-green bg-cyber-green/20 px-2 py-1 rounded-full">
+                <span className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">
                   <Bell className="h-3 w-3" />
                   {unreadCount} new
                 </span>
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-cyber-green" />
+              <Users className="h-4 w-4 text-muted-foreground" />
               <Select
                 value={selectedDepartment}
                 onValueChange={(value) => setSelectedDepartment(value as DepartmentType)}
               >
-                <SelectTrigger className="w-full bg-cyber-gray border-cyber-blue/30 text-sm">
+                <SelectTrigger className="w-full text-sm">
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
-                <SelectContent className="bg-cyber-gray border-cyber-blue/30">
+                <SelectContent>
                   {availableDepartments.map((dept) => (
                     <SelectItem key={dept} value={dept}>
                       {departmentLabels[dept]}
@@ -425,8 +425,8 @@ export const FloatingChat = () => {
               </Select>
             </div>
             {userDepartment && (
-              <p className="text-xs text-muted-foreground mt-2 font-share-tech">
-                Chatting as: <span className="text-cyber-green">{departmentLabels[userDepartment]}</span>
+              <p className="text-xs text-muted-foreground mt-2">
+                Chatting as: <span className="text-primary font-medium">{departmentLabels[userDepartment]}</span>
               </p>
             )}
           </div>
@@ -436,66 +436,40 @@ export const FloatingChat = () => {
             <div className="space-y-3">
               {loading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 text-cyber-blue animate-spin" />
+                  <Loader2 className="h-6 w-6 text-primary animate-spin" />
                 </div>
               ) : messages.length === 0 ? (
-                <p className="text-center text-muted-foreground font-share-tech py-8">
+                <p className="text-center text-muted-foreground py-8 text-sm">
                   No messages yet. Start a conversation with {departmentLabels[selectedDepartment]}!
                 </p>
               ) : (
                 messages.map((msg) => {
                   const isOwn = msg.sender_id === user?.id;
                   return (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
-                    >
-                      <div
-                        className={`max-w-[85%] rounded-lg p-3 ${
-                          isOwn
-                            ? "bg-cyber-blue/20 border border-cyber-blue/50"
-                            : "bg-black/50 border border-cyber-green/30"
-                        }`}
-                      >
-                        <p className={`text-xs font-share-tech mb-1 ${isOwn ? "text-cyber-blue" : "text-cyber-green"}`}>
-                          {isOwn ? "You" : msg.sender_name} •{" "}
-                          {departmentLabels[msg.sender_department]}
+                    <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
+                      <div className={`max-w-[85%] rounded-lg p-3 ${isOwn ? "bg-primary/10 border border-primary/20" : "bg-muted border border-border"}`}>
+                        <p className={`text-xs mb-1 font-medium ${isOwn ? "text-primary" : "text-foreground"}`}>
+                          {isOwn ? "You" : msg.sender_name} • {departmentLabels[msg.sender_department]}
                         </p>
-                        
-                        {/* Attachment Preview */}
                         {msg.attachment_url && (
                           <div className="mb-2">
                             {isImageAttachment(msg.attachment_type) ? (
                               <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer">
-                                <img
-                                  src={msg.attachment_url}
-                                  alt={msg.attachment_name || "Attachment"}
-                                  className="max-w-full max-h-32 rounded-lg border border-white/20 hover:border-cyber-blue transition-colors"
-                                />
+                                <img src={msg.attachment_url} alt={msg.attachment_name || "Attachment"} className="max-w-full max-h-32 rounded-lg border border-border hover:border-primary transition-colors" />
                               </a>
                             ) : (
-                              <a
-                                href={msg.attachment_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 p-2 rounded-lg bg-black/30 border border-white/20 hover:border-cyber-blue transition-colors"
-                              >
-                                <FileText className="h-4 w-4 text-cyber-blue" />
-                                <span className="text-xs text-white truncate max-w-[150px]">
-                                  {msg.attachment_name || "Attachment"}
-                                </span>
+                              <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 rounded-lg bg-muted border border-border hover:border-primary transition-colors">
+                                <FileText className="h-4 w-4 text-primary" />
+                                <span className="text-xs text-foreground truncate max-w-[150px]">{msg.attachment_name || "Attachment"}</span>
                                 <Download className="h-3 w-3 text-muted-foreground" />
                               </a>
                             )}
                           </div>
                         )}
-                        
                         {msg.message && !msg.message.startsWith("Shared:") && (
-                          <p className="text-sm text-white whitespace-pre-wrap">{msg.message}</p>
+                          <p className="text-sm text-foreground whitespace-pre-wrap">{msg.message}</p>
                         )}
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {new Date(msg.created_at).toLocaleString()}
-                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">{new Date(msg.created_at).toLocaleString()}</p>
                       </div>
                     </div>
                   );
@@ -506,68 +480,28 @@ export const FloatingChat = () => {
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-4 border-t border-cyber-blue/30 bg-black/50">
-            {/* Selected File Preview */}
+          <div className="p-4 border-t border-border">
             {selectedFile && (
-              <div className="flex items-center gap-2 mb-2 p-2 bg-cyber-blue/10 rounded-lg border border-cyber-blue/30">
-                <Paperclip className="h-4 w-4 text-cyber-blue" />
-                <span className="text-xs text-white truncate flex-1">{selectedFile.name}</span>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    setSelectedFile(null);
-                    if (fileInputRef.current) fileInputRef.current.value = "";
-                  }}
-                  className="h-6 w-6 p-0 text-muted-foreground hover:text-white"
-                >
+              <div className="flex items-center gap-2 mb-2 p-2 bg-primary/5 rounded-lg border border-primary/20">
+                <Paperclip className="h-4 w-4 text-primary" />
+                <span className="text-xs text-foreground truncate flex-1">{selectedFile.name}</span>
+                <Button size="sm" variant="ghost" onClick={() => { setSelectedFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }} className="h-6 w-6 p-0">
                   <X className="h-3 w-3" />
                 </Button>
               </div>
             )}
             <div className="flex gap-2">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileSelect}
-                className="hidden"
-                accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
-              />
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={sending}
-                className="text-cyber-blue hover:bg-cyber-blue/20"
-              >
+              <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" />
+              <Button size="sm" variant="ghost" onClick={() => fileInputRef.current?.click()} disabled={sending}>
                 <Paperclip className="h-4 w-4" />
               </Button>
-              <Input
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder={`Message ${departmentLabels[selectedDepartment]}...`}
-                className="bg-cyber-gray border-cyber-blue/30 font-share-tech text-sm"
-                onKeyPress={handleKeyPress}
-                disabled={sending}
-              />
-              <Button
-                onClick={sendMessage}
-                disabled={sending || (!newMessage.trim() && !selectedFile)}
-                size="sm"
-                className="bg-cyber-blue/20 border border-cyber-blue hover:bg-cyber-blue/30"
-              >
-                {sending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
+              <Input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder={`Message ${departmentLabels[selectedDepartment]}...`} className="text-sm" onKeyPress={handleKeyPress} disabled={sending} />
+              <Button onClick={sendMessage} disabled={sending || (!newMessage.trim() && !selectedFile)} size="sm">
+                {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
             {uploading && (
-              <p className="text-xs text-cyber-blue mt-2 flex items-center gap-1">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                Uploading file...
-              </p>
+              <p className="text-xs text-primary mt-2 flex items-center gap-1"><Loader2 className="h-3 w-3 animate-spin" />Uploading file...</p>
             )}
           </div>
         </div>
